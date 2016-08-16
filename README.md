@@ -12,5 +12,5 @@ Included with an Yondo account is a *hosted store website*. This provides a fron
 Go to the [Yondo Partner Network](http://partners.yondo.com/signup) and sign up for a developer account. Here you can create and upload your template, and create a development store to test your template. The editing functions are quite basic, most developers create their template externally and just upload when done.
 
 ###My template is empty, how do I get started?###
-[Download a Zip](https://github.com/expertory/circular-template/archive/master.zip) of this repository and upload it to the *files* section of your template. This will load the template with the files from this sample template.
+[Download a Zip](https://github.com/yondoecommerce/circular-template/archive/master.zip) of this repository and upload it to the *files* section of your template. This will load the template with the files from this sample template.
 
