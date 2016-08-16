@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    {{ 'css/circular.less' | asset_url | stylesheet_tag }}
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="/yondo.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+    {{ '/Content/shared/base/base-bundle.js' | script_tag }}
+    {% block head %}
+    {% endblock %}
+</head>
+    <body class="{{ templatePage }}">
+        <div>
+            <header class="navbar navbar-default navbar-static-top" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        {% if store.selectedLogo %}
+                        <a href="/">{{ store.selectedLogo | img_tag:store.name, store.selectedLogoClass }}</a>
+                        {% else %}
+                        <div class="navbar-brand">
+                            <a href="/" title="{{ store.name }}">
+                                {{ store.name| escape }}
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu-header">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+
+                    <div class="collapse navbar-collapse" id="menu-header">
+                        <!-- Navigation Links -->
+                        <ul class="nav navbar-nav navbar-right" style="{% if store.selectedLogo %}margin-top: 30px;{% endif%}">
+                            {% for section in sections %}
+                            {% if section.heading != 'Team Members' and section.heading != 'Portfolio' %}
+                            <li class="hidden-sm hidden-xs"><a href="/#{{section.id}}">{{section.heading}}</a></li>                           
+                            {% endif %}
+                            {% endfor %}
+
+                            {% if session.isLoggedIn == false %}
+                            <li><a href="/login">Login</a></li>
+                            {% endif %}
+
+                            {% if session.isLoggedIn && session.firstname != null %}
+                            <li class="">
+                                <a class="one-line customer-name">
+                                    <i class="fa fa-user"></i>
+                                    {% if session.firstname == null %}
+                                    {{ session.email | escape }}
+                                    {% else %}
+                                    {{ session.firstName | escape }} {{ session.lastName | escape }}
+                                    {% endif %}
+                                </a>
+                            </li>
+                            {% endif %}
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="view-cart">View Cart</a></li>
+                                    {% if session.isLoggedIn %}
+                                    <li><a href="/dashboard">Dashboard</a></li>
+                                    {% endif %}
+
+                                    {% if menus.size > 0 %}
+                                    <li class="divider"></li>
+                                    {% endif %}
+
+                                    {% for menu in menus %}
+                                    {% if menu.title != 'Team Members' %}
+                                    <li><a href="{{menu.url}}">{{menu.title}}</a></li>
+                                    {% else %}
+                                    <!--only show team member menu when the number of team member is more than 2-->
+                                    {% if teamMembers.size > 1 %}
+                                    <li><a href="{{menu.url}}">{{menu.title}}</a></li>
+                                    {% endif %}
+                                    {% endif %}
+                                    {% endfor %}
+
+                                    {% if session.isLoggedIn %}
+                                    <li class="divider"></li>
+                                    <li><a href="/logout">Log Out</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </header>
+            {% block belownav %}{% endblock %}
+        </div>        
+
+        <div class="body">            
+            <div class="container">
+                <!-- Page Content -->
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+        
+        <div id="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-8 col-sm-6 col-sm-offset-3 logo"><a href="{{siteInfo.AlternateHomePage}}">Powered by<img id="logo-120x40-img" alt="{{siteInfo.SiteName}}" /></a></div>
+                    <div class="col-xs-4 col-sm-3 copyright">Copyright &copy; {{ dateTime | date: "yyyy" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- scripts -->
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        {{ bookingPluginUrl | script_tag }}
+
+        <script>
+            function RgbToHex(rgb) {
+                rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+                return (rgb && rgb.length === 4) ? "#" +
+                 ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+                 ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+                 ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
+            }
+
+            var backgroundColorRGB = $('body').css("backgroundColor");
+            var backgroundColorHex = RgbToHex(backgroundColorRGB);
+
+            function GetContrastYIQ(hexcolor) {
+                var r = parseInt(hexcolor.substr(1, 2), 16);
+                var g = parseInt(hexcolor.substr(3, 2), 16);
+                var b = parseInt(hexcolor.substr(5, 2), 16);
+                var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+                return (yiq >= 128) ? 'white' : 'black';
+            }
+
+            var bgColor = GetContrastYIQ(backgroundColorHex);
+
+            // invert logo color based on background color
+            if (bgColor == 'black') {
+                document.getElementById("logo-120x40-img").src = "/Content/logo/" + "{{siteInfo.SiteName}}" + "-logo-without-icon-dark-120x40.png";
+            }
+            else {
+                document.getElementById("logo-120x40-img").src = "/Content/logo/" + "{{siteInfo.SiteName}}" + "-logo-without-icon-light-120x40.png";
+            }
+
+        </script>
+        {% block scripts %}
+        {% endblock %}
+    </body>
+</html>

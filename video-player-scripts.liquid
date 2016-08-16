@@ -1,0 +1,192 @@
+﻿{{ 'plugins/plugins-bundle.min.js' | asset_url | script_tag }}
+
+<script>
+    var videoPlayer = null;
+    {% if video.availableToWatch == true or video.previewVideoUrl360p != null %}
+    videoPlayer = videojs('#video-player', {
+        plugins: {
+            resolutions: true
+        }
+    });
+    {% endif %}
+    
+    if(videoPlayer){
+        $(videoPlayer).ready(function(){
+            //hides a poster if autoplay is disabled in order to prevent that the poster is shown before staring the video
+            {% if noautoplay %}
+            $('video').attr('poster', '{{ video.thumbnail720Url }}');
+            {% endif %}
+            
+            //shows actual video player when the player is ready
+            $("video").show();
+        });
+        {% if store.selectedLogo %}
+        videoPlayer.watermark({
+            file: '{{ store.selectedLogo }}',
+            xpos: 100,
+            ypos: 0,
+            xrepeat: 0
+        });
+        {% else %}
+        var watermark = '<div class="text-watermark">' + '{{ store.name | escape }}' + '</div>';
+        $('#video-player').append(watermark);
+        {% endif %}
+
+        // shows rental or subscription info when only a preview video is played
+        {% if video.availableToWatch != true && video.previewVideoUrl360p != null  %}
+        var endFrame = $('#end-frame').html();
+        $('#video-player').append(endFrame);
+
+        videoPlayer.on('ended', function () {
+            $('.end-frame').show();
+        });
+
+        videoPlayer.on('playing', function () {
+            $('.end-frame').hide();
+        });
+        {% endif %}
+        
+        // video player analytics
+        var total = 0;
+        var lastPlay = 0;
+        var currentPlay = 0;
+        var eventQueue = [];
+        var viewingId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });     // random guid
+
+        function AddEvent(e) {
+            var currentTime = videoPlayer.currentTime();
+            eventQueue.push({ timeStamp: new Date(), type: e.type, time: currentTime});
+            //events.append('<li>' + e.type + '</li>');
+        }
+
+        // send event queue to server
+        window.setInterval(function() {
+            if (eventQueue.length == 0) return;
+            $.ajax(
+            {
+                url: "/video/{{video.id}}/analytics",
+                type: "POST",
+                data: JSON.stringify({
+                    Events: eventQueue,
+                    viewGuid: viewingId,
+                    watchDuration: total
+                }),
+                contentType: "application/json; charset=utf-8"
+            });
+            // clear event queue.
+            while(eventQueue.length > 0) {
+                eventQueue.pop();
+            }
+        }, 15 * 1000);
+
+        videoPlayer.on('play', function(e){
+            lastPlay = this.currentTime();
+            AddEvent(e);
+        });
+        videoPlayer.on('pause', function(e){
+            total = total + this.currentTime() - lastPlay;
+            AddEvent(e);
+        });
+        videoPlayer.on('timeupdate', function(e) {
+            currentPlay = this.currentTime() - lastPlay;
+            if (currentPlay >= 5) {
+                // every 5 seconds save the total watched
+                total = total + currentPlay;
+                lastPlay = this.currentTime();
+            }
+        });
+
+        videoPlayer.on('ended', AddEvent);
+        videoPlayer.on('fullscreenchange ', AddEvent);
+        videoPlayer.on('loadedalldata', AddEvent);
+        videoPlayer.on('loadeddata', AddEvent);
+        videoPlayer.on('loadedmetadata', AddEvent);
+        videoPlayer.on('loadstart', AddEvent);
+        videoPlayer.on('seeked', AddEvent);
+        videoPlayer.on('waiting', AddEvent);
+
+        videoPlayer.on('error', function(event) {
+            var messages = {
+                // MEDIA_ERR_ABORTED
+                1: "The video download was cancelled",
+                // MEDIA_ERR_NETWORK
+                2: "The video connection was lost, please confirm you're connected to the internet",
+                // MEDIA_ERR_DECODE
+                3: "The video is bad or in a format that can't be played on your browser",
+                // MEDIA_ERR_SRC_NOT_SUPPORTED
+                4: "Access to this video has expired. Reload the page to try again.",
+                // MEDIA_ERR_ENCRYPTED (Chrome)
+                5: "The video you're trying to watch is encrypted and we don't know how to decrypt it",
+                unknown: "An unanticipated problem was encountered, check back soon and try again"
+            };
+
+            var code, dialog, player;
+            player = this;
+            code = videoPlayer.error ? videoPlayer.error().code : event.code;
+      
+            // create the dialog
+            dialog = document.createElement('div');
+            dialog.className = 'vjs-error-dialog';
+            dialog.textContent = messages[code] || messages['unknown'];
+            addEventListener.call(dialog, 'click', function(event){
+                player.el().removeChild(dialog);
+            }, false);
+
+            // add it to the DOM
+            player.el().appendChild(dialog);
+        });
+    }
+
+    if (videoPlayer) {
+        videoPlayer.addThis({
+            //facebook: false,
+            //twitter: false,
+            googleplus: false,
+            linkedin: false,
+            pinterest: false,
+            email: false,
+            more: false,
+            website_url: "{{store.subdomainUrl}}" + "{{video.url}}",
+            embed: "{{store.subdomainUrl}}" + "/video/{{video.id}}/embed",
+            embed_url:"{{store.subdomainUrl}}" + "/video/{{video.id}}/embed",
+            share_url: "{{store.subdomainUrl}}" + "{{video.url}}",
+        });
+    }
+
+    //disable right click on video player
+    $(document).ready(function () {
+        $('#video-player').bind('contextmenu', function (event) {
+            var rightClickAlertWidth = $('.right-click-alert').width();
+            var rightClickAlertHeight = $('.right-click-alert').height();
+            
+            var videoPlayerOffset = $('.video-player').offset();
+            var relativeYPosition = (event.pageY - videoPlayerOffset.top);
+            var relativeXPosition = (event.pageX - videoPlayerOffset.left); // shows alert message on the right of the cursor
+
+            if(event.pageX + rightClickAlertWidth > window.innerWidth)
+                relativeXPosition = relativeXPosition - rightClickAlertWidth - 20;
+
+            if(event.pageY + rightClickAlertHeight + 10 > window.innerHeight)
+                relativeYPosition = relativeYPosition - rightClickAlertHeight - 10;
+
+            $(".right-click-alert").css({ position: "absolute", top: relativeYPosition, left: relativeXPosition, display: 'block !important' });
+            return false;
+        });
+
+        $('.right-click-alert').bind('contextmenu', function (event) {
+            return false;
+        });
+
+        $('body').bind('contextmenu', ':not(#video-player)', function () {
+            $(".right-click-alert").css({ display: 'none' });
+        });
+
+        $('body').bind('click', ':not(#video-player)', function () {
+            $(".right-click-alert").css({ display: 'none' });
+        });
+
+    });
+</script>

@@ -1,0 +1,28 @@
+﻿{% extends base %}
+{% block title %}Calendar - {{ store.name }}{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Calendar</h2>
+        <div class="divider"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <form role="form" method="GET">
+            <h4>Please check the booking details.</h4>
+            <p><strong>Session:</strong> <a href="{{ booking.listing.url }}" target="_blank">{{ booking.listing.title | escape }}</a></p>
+            <p><strong>Time:</strong> {{ booking.startTimeUTC | local_time }}</p>
+            <p><strong>Duration:</strong> {{ booking.listing.duration }} minutes</p>
+            <p><strong>With:</strong> {{ booking.listing.teamMember.displayname }}</p>
+            <p>
+                <a class="btn btn-primary" role="button" href="/session/{{booking.id}}/calendar?code={{booking.securecode}}&download=true&accessby={{booking.accessBy}}"><i class="fa fa-download"></i> Download</a>
+                <a class="btn btn-success" role="button" href="{{booking.googleCalendarUrl}}" target="_blank"><i class="fa fa-calendar-plus-o"></i> Add to Google Calendar</a>
+            </p>
+        </form>
+    </div>
+</div>
+    
+{% endblock %}

@@ -1,0 +1,17 @@
+﻿<div class='team-member-card'>
+    <div class='team-member-image'>
+        <a href="{{ teamMember.url }}">
+            <img src="{{teamMember.profileImageUrl}}" />
+        </a>
+    </div>
+     
+    <div class='profile'>
+        <div class="pull-right location one-line">
+            <i class="fa fa-map-marker text-muted"></i> {{ teamMember.location }}
+        </div>
+
+        <div class="full-name one-line">
+            <a href="{{ teamMember.url }}">{{ teamMember.fullName | escape }}</a>
+        </div>
+    </div>
+</div>

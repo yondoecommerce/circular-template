@@ -1,0 +1,175 @@
+﻿{% extends base %}
+{% block title %}{{search.query | escape}} - {{ store.name }}{% endblock %}
+{% block head %}
+<script>
+    // if there is no 1 to 1 but there are videos or webinar, then redirect to video or webinar search
+    // it is placed in head in order to redirect to video or webinar search page before page loaded
+    {% if listings == empty %} 
+    {% if videos != empty %} 
+    window.location.href =  "/search/video?query={{search.query | url_encode}}";
+    {% elsif webinarTopics != empty %} 
+    window.location.href =  "/search/webinar?query={{search.query | url_encode}}";
+    {% endif %}
+    {% endif %}
+</script>
+{% endblock %}
+{% block content %}
+
+
+{% if listings != empty or videos != empty or webinarTopics != empty %} 
+    {% if page.number == 1 %}
+    <div class="row">
+        <div class="col-md-12 search-nav">
+            <ul class="nav nav-pills" role="tablist">
+                <li class="active"><a>Live 1-to-1 Sessions</a></li>                
+                {% if webinarTopics != empty %} 
+                <li><a href="/search/webinar?query={{ search.query | url_encode }}">Webinars</a></li>
+                {% endif %}
+                {% if videos != empty %} 
+                <li><a href="/search/video?query={{ search.query | url_encode }}">Videos</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+    {% endif %}
+{% endif %}
+
+{% if videos != empty and page.number == 1 %}
+<div class="row video-result">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Videos for "{{ search.query | escape }}"</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                {% for video in videos %}
+                {{ video | video_card }}
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if videos.size > 5 %}
+        <div class="row">
+            <div class="col-md-12">
+                <a href="/search/video?query={{ search.query | url_encode }}">More videos...</a>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<div class="divider"></div>
+{% endif %}
+
+{% if webinarTopics != empty and page.number == 1 %}
+<div class="row video-result">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Webinars for "{{ search.query | escape }}"</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                {% for topic in webinarTopics %}
+                    {% include webinar-topic-card %}
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if webinarTopics.size > 5 %}
+        <div class="row">
+            <div class="col-md-12">
+                <a href="/search/webinar?query={{ search.query | url_encode }}">More webinars...</a>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<div class="divider"></div>
+{% endif %}
+
+
+{% if search.query != empty %}
+<div class="row listing-result">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Results for "{{ search.query | escape }}"</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                {% for listing in listings %}
+                    {% include listing-card %} 
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if page.prev != true %}
+{% assign prev = 'disabled' %}
+{% endif %}
+
+{% if page.next != true %}
+{% assign next = 'disabled' %}
+{% endif %}
+
+{% if page.next != true %}
+{% assign next = 'disabled' %}
+{% endif %}
+
+{% if page.totalResults > 0 %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="text-center">
+            <ul class="pagination">
+                {% if page.prev %}
+                <li><a href="/search?query={{search.query | url_encode}}&page={{page.number| minus:1}}">&laquo;</a></li>
+                {% else %}
+                <li class="disabled"><a>&laquo;</a></li>
+                {% endif %}
+
+                {% for i in (1...page.totalPages) %}
+                {% if i == page.number %}
+                {% assign current = 'active' %}
+                {% else %}
+                {% assign current = '' %}
+                {% endif %}
+                <li class="{{ current }}"><a href="/search?query={{search.query | url_encode}}&page={{i}}">{{i}}</a></li>
+                {% endfor %}                                
+
+                {% if page.next %}
+                <li><a href="/search?query={{search.query | url_encode}}&page={{page.number | plus:1}}">&raquo;</a></li>
+                {% else %}
+                <li class="disabled"><a>&raquo;</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if page.totalResults == 0 %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="text-center">
+            <h2>No results.</h2>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,7 @@
+﻿#options skipremin,outputbundleonly
+video-js/video.dev.js
+video-js-resolutions/video-js-resolutions.js
+video-js-watermark/videojs.watermark.js
+video-js-addThis/videojs.addThis.js
+countdownjs/countdown.js
+moment-countdown/moment-countdown.js

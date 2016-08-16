@@ -1,0 +1,126 @@
+﻿{% extends base %}
+{% block title %}{{ store.name }}{% endblock %}
+{% block head %}
+    {{ 'plugins/magnific-popup/magnific-popup.min.css' | asset_url | stylesheet_tag }}
+    {{ 'plugins/plugins-bundle.min.css' | asset_url | stylesheet_tag }}
+    {{ templatePage | meta_tags }}
+{% endblock %}
+{% block content %}
+
+{% if store.BannerImageUrl != null %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="banner">
+            {{ store.BannerImageUrl | img_tag }}
+        </div>
+    </div>
+</div>
+            {% endif %}
+
+            {% if templatePage == 'home' and about != null and about != '' %}
+<div class="about" style="">
+    <div class="container">
+        {{ about }}
+    </div>
+</div>
+            {% endif %}
+
+
+<div class="row" style="display:none;">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs main-menu">
+            {% for section in sections %}
+            <li class="{{section.id}}"><a href="#{{section.id}}">{{section.heading}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="tab-content">
+        {% for section in sections %}
+        <div class="tab-pane {{section.id}}" id="{{section.id}}">
+            <div class="col-md-12">
+                <div class="tab-title">{{section.heading}}</div>
+            </div>
+            {% if section.id == "live-1-to-1" %}            
+            <div class="text-center">
+                {% for listing in listings %}
+                    {% include listing-card %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if section.id == "video" %}
+            <div class="col-md-12">
+                {% include video-tab %}
+            </div>
+            {% endif %}
+
+            {% if section.id == "team-member" %}
+            <div class="col-md-12">
+               {% for teamMember in teamMembers %}
+               <div class="team-member-card">
+                    <div class="details">                
+                        <a href="{{ teamMember.url }}" title="{{ teamMember.fullName }}">
+                            <div style="float:left">{{ teamMember.profileThumbUrl | img_tag: teamMember.fullName }}</div>
+                            <div class="display-name one-line">{{ teamMember.fullName | escape }}</div>
+                        </a>
+                        <div class="one-line"><i class="fa fa-map-marker text-muted"></i> {{ teamMember.location }} </div>                               
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if section.id == "portfolio" %}
+            <div class="col-md-12 ">
+                <div class="portfolio-tab">
+                    {% for portfolio in portfolios %}
+                    {% include portfolio %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if section.id == "webinars" %}
+            <div class="text-center">
+                {% for topic in webinarTopics %}
+                    {% include webinar-topic-card %}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+                
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ 'plugins/magnific-popup/jquery.magnific-popup.min.js' | asset_url | script_tag }}
+    {{ 'scripts/portfolio.js' | asset_url | script_tag }}
+
+<script>
+    $(function () {
+        // Change tab on load
+        function hashChange() {
+            var hash = window.location.hash;
+            if(hash)
+                $('ul.nav a[href="' + hash + '"]').tab('show');
+            else
+                $('.main-menu > li:first-child > a').tab('show');
+        }
+
+        hashChange();
+        // Change tab on hashchange
+        window.addEventListener('hashchange', function () {
+            hashChange();
+        }, false);
+
+    });
+</script>
+
+{% endblock %}

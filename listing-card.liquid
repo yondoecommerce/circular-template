@@ -1,0 +1,57 @@
+﻿{% if listing.type == "Listing" %}
+<!-- listing card -->
+<div class="long-card">
+    <div class='card-info'>
+        <div class="title one-line"><a href='{{listing.url}}'>{{listing.title}}</a></div>
+        <div class="description">{{listing.descriptionHtml}}</div>
+        <div class="card-image">
+            <div class="card-image-wrapper">
+                <a href="{{listing.url}}">
+                    <img src='{{listing.image220Url}}' />
+                </a>
+            </div>            
+        </div>
+        
+        <div class="details">
+            <div>{{listing.price | money}}</div>
+            <div>{{listing.duration}} mins</div>
+        </div>
+
+        <div class="register">
+            <button class='btn btn-primary btn-lg make-booking' data-listing='{{listing.id}}'>Book Now</button>
+        </div>
+
+        <div class="additional-info">
+            <a href="{{listing.url}}">Additional Info <i class="fa fa-angle-double-right"></i></a>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- package card -->
+<div class="long-card">
+    <div class='card-info'>
+        <div class="title one-line"><a href='{{listing.url}}'>{{listing.title}}</a></div>
+        <div class="description">{{listing.descriptionHtml}}</div>
+        <div class="card-image">
+            <div class="card-image-wrapper">
+                <a href="{{listing.url}}">
+                    <img src='{{listing.image220Url}}' />
+                </a>
+            </div>
+        </div>
+        
+        <div class="details">
+            <div>{{listing.price | money}}</div>
+            <div>Package of {{listing.listings.size}}</div>
+        </div>
+
+        <div class="register">
+            <button class='btn btn-primary btn-lg purchase-package' data-package='{{listing.id}}'>Purchase</button>            
+        </div>
+
+        <div class="additional-info">
+            <a href="{{listing.url}}">Additional Info <i class="fa fa-angle-double-right"></i></a>
+        </div>
+    </div>
+</div>
+{% endif %}

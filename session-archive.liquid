@@ -1,0 +1,42 @@
+﻿{% extends base %}
+{% block title %}Archive - {{ store.name }}{% endblock %}
+
+{% block head %}
+{{ 'plugins/plugins-bundle.min.css' | asset_url | stylesheet_tag }}
+{{ templatePage | meta_tags }}
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>{{ booking.listing.title | escape }} - {{ archive.createdDate | local_time }}</h2>
+        <div class="divider"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <video id="video-player" class="video-js vjs-default-skin" controls preload="none" width="auto" height="auto" data-setup="{}">
+            <source src="{{ archive.downloadUrl }}" type='video/mp4'>
+            <p>Video Playback Not Supported</p>
+        </video>
+    </div>
+
+    <div class="col-md-4">
+        <p><strong>Session:</strong> <a href="{{ booking.listing.url }}" target="_blank">{{ booking.listing.title | escape }}</a></p>
+        <p><strong>Time:</strong> {{ booking.startTimeUTC | local_time }}</p>
+        <p><strong>With:</strong> {{ booking.listing.teamMember.displayname }}</p>
+        <p>
+            <a class="btn btn-primary" role="button" href="{{archive.downloadUrl}}"><i class="fa fa-download"></i> Download</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ 'plugins/plugins-bundle.min.js' | asset_url | script_tag }}
+
+<script>
+    var videoPlayer = videojs('#video-player');
+</script>
+{% endblock %}

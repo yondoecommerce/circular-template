@@ -1,0 +1,21 @@
+/* Override css files of plugin in order to resolve relative in .css file */
+
+/* override video-js.css */
+@font-face {
+  font-family: 'VideoJS';
+  src: url('video-js/font/vjs.eot');
+  src: url('video-js/font/vjs.eot?#iefix') format('embedded-opentype'), url('video-js/font/vjs.woff') format('woff'), url('video-js/font/vjs.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* override video-js-resolutions.css */
+@font-face{
+  font-family: 'VideoJS-Resolutions';
+  src: url('video-js-resolutions/Font/fonts/VideoJS-Resolutions.eot');
+  src: url('video-js-resolutions/Font/fonts/VideoJS-Resolutions.eot?#iefix') format('embedded-opentype'),
+  url('video-js-resolutions/Font/fonts/VideoJS-Resolutions.woff') format('woff'),
+  url('video-js-resolutions/Font/fonts/VideoJS-Resolutions.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}

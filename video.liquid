@@ -1,0 +1,112 @@
+﻿{% extends base %}
+{% block title %}{{ video.title }} - {{ store.name }}{% endblock %}
+{% block head %}
+{{ 'plugins/plugins-bundle.min.css' | asset_url | stylesheet_tag }}
+{{ templatePage | meta_tags }}
+{% endblock %}
+{% block content %}
+
+<div class="row margin-top-20">
+    <!-- Image and main body -->
+    <div class="col-md-8">
+        <div class="left-panel">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div>
+                        {% include video-player%}
+                    </div>
+
+                    {% if video.descriptionHtml != empty %}
+                    <div class="description">
+                        <p>{{ video.descriptionHtml }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right booking info panel -->
+    <div class="col-md-4">
+        <div class="right-panel">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">{{ video.title | escape }}</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% if video.subscriptionAvailable == false or video.subscriptionAvailable == true and video.subscribed == false%}
+                            {% if video.rented %}
+                            <p>Rental expires {{ video.rentalExpire | from_x }}</p>
+                            {% endif %}
+
+                            {% if video.rentalAvailable and video.rented == false %}
+                            <p><span class="title">Rental Price:</span> <br /> {{ video.rentalPrice | money }} {% if video.rentalPrice > 0 %}/ {{ video.rentalPeriod | period }} {% endif %}</p>
+                            
+                            <p><button class="btn btn-primary btn-lg btn-block video-rental" data-video="{{ video.id }}">Rent</button></p>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            {% if video.subscriptionAvailable and video.subscribed == false %}
+                            <p><span class="title">Subscription Price:</span> <br /> {{ video.subscriptionPrice | money }} {% if video.subscriptionPrice > 0 %}/ month {% endif %}</p>
+
+                            <p><button class="btn btn-primary btn-lg btn-block video-subscription" data-video="{{ video.id }}">Subscription</button></p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="">
+                        {% if video.author%}
+                        <p class="one-line"><span class="title">Author:</span></p>
+                        <p>{{ video.author | escape }}</p>
+                        {% endif %}
+                        {% if video.tags != empty %}
+                        <p><span class="title">Tags:</span></p>
+                        <p>
+                            {% for tag in video.tags %}
+                            <div class="label label-primary">{{tag}}</div>
+                            {% endfor %}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- File Attachments -->
+{% if video.fileAttachments != empty %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="attachments">
+            <div class="panel panel-default">
+                <div class="panel-heading">attachments</div>
+                <div class="panel-body">
+                    {% for attachment in video.fileAttachments %}
+                    <div class="attachment">
+                        <div class="attachment-title">{{ attachment.title | escape }}</div>
+                        <p class="attachment-description">{{ attachment.description | escape }}</p>
+                        <div class="filename">
+                            <i class="fa {{attachment.icon}}"></i> {{ attachment.filename | escape }}
+                            {% if attachment.downloadUrl != null %}
+                            <a href="{{ attachment.downloadUrl }}" class="btn btn-default btn-sm" target="_blank" download="{{ attachment.filename | escape }}"><i class="fa fa-download"></i> Download</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+{% include video-player-scripts%}
+{% endblock %}

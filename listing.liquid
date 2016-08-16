@@ -1,0 +1,138 @@
+﻿{% extends base %}
+{% block title %}{{ listing.title }} - {{ store.name }}{% endblock %}
+{% block head %}
+{{ 'plugins/magnific-popup/magnific-popup.min.css' | asset_url | stylesheet_tag }}
+{{ templatePage | meta_tags }}
+{% endblock %}
+{% block content %}
+
+<div class="row margin-top-20">
+    <!-- Image and main body -->
+    <div class="col-md-7">
+        <div class="left-panel">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="image-wrapper">{{ listing.image580Url | img_tag: listing.title}}</div>
+
+                    {% if listing.descriptionHtml %}
+                    <div class="description">
+                        {{ listing.descriptionHtml }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right booking info panel -->
+    <div class="col-md-5">
+        <div class="right-panel">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">{{ listing.title | escape }}</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="details">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <p><span class="title">Price:</span> {{ listing.price | money }}</p>
+                                <p><span class="title">Duration:</span> {{ listing.duration }} minutes</p>
+
+                                <p><button class="btn btn-primary btn-lg make-booking" data-listing="{{ listing.id }}">Book Now</button></p>
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="availability">
+                                    <p><span class="title">Upcoming availability</span></p>
+
+                                    {% if upcommingAvaliability == empty %}
+                                    <div class="text-muted">No available sessions.</div>
+                                    {% else %}
+                                    {% for availability in upcommingAvaliability %}
+                                    <div>
+                                        <a href="#" class="session-time" data-listing="{{ listing.id }}" data-selected-time="{{ availability }}"><i class="fa fa-calendar-o"></i> {{ availability | local_time }}</a>
+                                    </div>
+                                    {% endfor %}
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="team-member">
+                        <p><span class="title">Team Member:</span></p>
+                        <p><a href="{{listing.teamMember.url}}">{{ listing.teamMember.profileThumbUrl | img_tag: listing.teamMember.displayName }} {{ listing.teamMember.fullName | escape }}</a></p>
+                        <p><span class="title">Location:</span></p>
+                        <p>{{ listing.teamMember.location }}</p>
+                        {% if listing.teamMember.qualificationsHtml != empty %}
+                        <p><span class="title">Qualifications:</span></p>
+                        <p>{{ listing.teamMember.qualificationsHtml }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if listing.prerequisiteHtml %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="prerequisite">
+            <div class="panel panel-default">
+                <div class="panel-heading">Prerequisite</div>
+                <div class="panel-body">
+                    {{ listing.prerequisiteHtml }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if listing.materials != empty %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="materials">
+            <div class="panel panel-default">
+                <div class="panel-heading">Materials</div>
+                <div class="panel-body">
+                    {% for material in listing.materials %}
+                    <div class="material">
+                        <p><span class="material-title">{{ material.name | escape }}</span></p>
+                        <p class="material-description">{{ material.description }}</p>
+                        <div class="material-filename">{{ material.fileName | escape }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if listing.portfolios != empty  %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="portfolios" id="portfolio">
+            <div class="panel panel-default">
+                <div class="panel-heading">Portfolio</div>
+                <div class="panel-body">
+                    {% for portfolio in listing.portfolios %}
+                    {% include portfolio %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+{% endblock %}
+
+{% block scripts %}
+{{ 'plugins/magnific-popup/jquery.magnific-popup.min.js' | asset_url | script_tag }}
+{{ 'scripts/portfolio.js' | asset_url | script_tag }}
+{% endblock %}
+

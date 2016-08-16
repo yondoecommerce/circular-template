@@ -1,0 +1,110 @@
+﻿{% extends base %}
+{% block title %}{{ webinarTopic.title | escape }} - {{ store.name }}{% endblock %}
+{% block head %}
+{{ templatePage | meta_tags }}
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <!-- Image and main body -->
+    <div class="col-md-12 margin-top-20">
+        <div class="section">
+            <h2 class="topic-title">{{ webinarTopic.title | escape }}</h2>
+
+            {% if webinarTopic.imageSrc != null %}
+            <div class="image-warpper">{{ webinarTopic.imageSrc | img_tag: webinarTopic.title}}</div>
+            {% endif %}
+
+            {% for webinar in webinarTopic.upcoming %}
+            <div class="upcoming">
+                <h3 class="start-time">{{ webinar.startTimeUtc | local_time:'dddd, MMMM Do [at] h:mm A' }}</h3>
+                <p class="timezone">Times are displayed in your local timezone</p>
+
+                {% if webinar.name != null %}
+                <h4 class="webinar-name">{{ webinar.name | escape }}</h4>
+                {% endif %}
+
+                {% if webinar.maxAttendees != webinar.currentAttendees %}
+                <button title="Click to register" class="btn btn-lg btn-primary purchase-webinar" data-webinar="{{ webinar.id }}">Register Now</button>
+                {% else %}
+                <button title="Sold Out" class="btn btn-lg btn-warning" disabled>Sold Out <span style="font-size:14px;">{{ webinar.startTimeUtc | local_time }}</span></button>
+                {% endif %}
+                <p class="space-available">Limited Spaces Available</p>
+
+                <div class="countdown" id="counter-{{webinar.id}}">
+                    <div class="time-wrapper"><div class="start-time"><div class="days">0</div><div>DAYS</div></div></div>
+                    <div class="time-wrapper"><div class="start-time"><div class="hours">0</div><div>HOURS</div></div></div>
+                    <div class="time-wrapper"><div class="start-time"><div class="minutes">0</div><div>MINS</div></div></div>
+                    <div class="time-wrapper"><div class="start-time"><div class="seconds">0</div><div>SECS</div></div></div>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if webinarTopic.descriptionHtml %}
+            <div class="description">
+                {{ webinarTopic.descriptionHtml }}
+            </div>
+            {% endif %}            
+
+            {% if webinarTopic.attachments != empty %}
+            <div class="attachments">
+                <h4>Attachments</h4>
+                {% for attachment in webinarTopic.attachments %}
+                <div class="attachment">
+                    <p><span class="material-title">{{ attachment.name | escape }}</span></p>
+                    <p class="material-description">{{ attachment.description }}</p>
+                    <div class="material-filename">{{ attachment.fileName | escape }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ 'plugins/plugins-bundle.min.js' | asset_url | script_tag }}
+
+<script>
+$(function () {
+    var webinarTopic = {{ webinarTopic | json:'webinarTopic' }};
+
+    function updateCountdown(){
+        var counter;
+        $.each(webinarTopic.upcoming, function(index, webinar){
+            counter = moment.utc().countdown(moment.utc(webinar.startTimeUtc),
+                    countdown.DAYS |
+                    countdown.HOURS |
+                    countdown.MINUTES |
+                    countdown.SECONDS
+                );
+
+            var days = 0, hours = 0, minutes = 0, seconds = 0;
+            if(moment.utc().isBefore(moment.utc(moment.utc(webinar.startTimeUtc))))
+            {
+                days = counter.days;
+                hours = counter.hours;
+                minutes = counter.minutes;
+                seconds = counter.seconds;
+            }
+
+            $("#counter-" + webinar.id + " .days").text(days);
+            $("#counter-" + webinar.id + " .hours").text(hours);
+            $("#counter-" + webinar.id + " .minutes").text(minutes);
+            $("#counter-" + webinar.id + " .seconds").text(seconds);
+
+        });
+    };
+
+    updateCountdown();
+    setInterval(function(){
+        updateCountdown();       
+    }, 1000);
+});
+
+
+</script>
+
+{% endblock %}

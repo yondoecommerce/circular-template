@@ -1,0 +1,72 @@
+﻿{% extends base %}
+{% block title %}Reschedule Booking - {{ store.name }}{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Reschedule Booking</h2>
+        <div class="divider"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <form role="form" method="POST">
+            <h4>Please check the booking details.</h4>
+            <p><strong>Session:</strong> <a href="{{ booking.listing.url }}" target="_blank">{{ booking.listing.title | escape }}</a></p>
+            <p><strong>Time:</strong> {{ booking.startTimeUtc | local_time }}</p>
+            <p><strong>Duration:</strong> {{ booking.listing.duration }} minutes</p>
+            <p><strong>With:</strong> {{ booking.listing.teamMember.displayname }}</p>
+
+            {% if successMessage != null %}
+            <div class="alert alert-success">
+                {{ successMessage }}
+            </div>
+            {% endif %}
+
+            {% if errorMessage != null %}
+            <div class="alert alert-danger">
+                {{ errorMessage }}
+            </div>
+            {% endif %}
+
+            {% if errorMessage != null or successMessage != null %}
+            <button type="button" class="btn btn-warning" disabled="disabled">Reschedule Booking</button>
+            {% else %}
+            <button type="button" class="btn btn-warning make-booking" data-listing="{{booking.listing.id}}" data-reschedule="true">Reschedule Booking</button>
+            {% endif %}
+            
+            <input type="text" name="SelectedTimeAsIS8601" id="selected-time" hidden="hidden" />
+        </form>
+    </div>
+</div>
+    
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $(window).load(function () {
+            //show booking panel on get method
+            {% if successMessage == null %}
+            $(".make-booking").trigger("click");
+            {% endif %}            
+        });
+
+        function listenMessage(msg) {
+            if (typeof msg.data === 'string' && msg.data.indexOf("selectedTime") > -1) {
+                var selectedTime = msg.data.split(';')[1];
+                $("#selected-time").val(selectedTime);
+
+                $("form").submit();
+            }
+        }
+
+        if (window.addEventListener) {
+            window.addEventListener("message", listenMessage, false);
+        } else {
+            window.attachEvent("onmessage", listenMessage);
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+﻿{% if portfolio.portfolioAsset.assetTypeName == "Image" %}
+    <div class='image-preview'> 
+        <a href='{{ portfolio.portfolioAsset.imageUrl }}'>
+            {{ portfolio.portfolioAsset.imageThumbUrl | img_tag }}
+        </a>
+    </div>
+{% endif %}
+
+{% if portfolio.portfolioAsset.assetTypeName == "Document" %}
+    <div class='document-preview'>
+        <div class='image-container'>
+            <a href='{{ portfolio.portfolioAsset.documentUrl }}' target='_blank'>
+                {{ portfolio.portfolioAsset.documentThumbUrl | img_tag }}
+            </a>
+        </div>
+        <div class="one-line"> {{ portfolio.portfolioAsset.comment}} </div>
+    </div>
+{% endif %}
+                
+{% if portfolio.portfolioAsset.assetTypeName == "Video" %}
+    <div class='video-preview video-preview-{{ portfolio.portfolioAsset.id }} loading' data-videourl="{{ portfolio.portfolioAsset.videoUrl }}"> 
+        <div class='image-container'>
+            <img style='width: 100px;height: 100px;'/>
+            <i class='fa fa-spinner fa-spin fa-2x' style='left: -65px; position: relative;'></i>
+        </div>
+    </div>
+{% endif %}

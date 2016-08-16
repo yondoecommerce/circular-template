@@ -1,0 +1,230 @@
+﻿{% extends base %}
+{% block title %}Customer Dashboard - {{ store.name }}{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h2><i class="fa fa-home"></i> Customer Dashboard</h2>
+        <div class="divider"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Upcoming Bookings</div>
+            <ul class="list-group">
+                {% for booking in upcomingBookings %}
+                {% if booking.listing != null %}
+                <li class="list-group-item">
+                    {{ booking.listing.image220Url | img_tag:booking.listing.title, 'listing-thumb pull-left' }}
+                    <div>{{ booking.startTimeUTC | local_time }} </div>
+                    <div><a href="{{ booking.listing.url }}">{{ booking.listing.title | escape }}</a></div>
+
+                    {% if booking.connectionType == "DialIn" %}
+                    <div class="call-info">
+                        Dial in Number: {{booking.dialInNumber}} <br />
+                        Access Code : {{booking.accessCode}} / Secure Pin: {{booking.securePin}}
+                    </div>
+                    {% elsif booking.connectionType == "DirectContact" %}
+                    <div class="call-info">
+                        Your contact number: {{booking.contactNumber}}
+                    </div>
+                    {% endif %}
+
+                    <div class="button-group">
+                        {% if booking.connectionType == "Video" %}
+                        <a class="btn btn-default btn-xs" href="{{ booking.startSessionUrl }}"><i class="fa fa-video-camera"></i> Start Session</a>
+                        {% endif %}
+
+                        {% if booking.cancelBookingUrl != null %}
+                        <a class="btn btn-default btn-xs" href="{{ booking.cancelBookingUrl }}"><i class="fa fa-ban"></i> Cancellation</a>
+                        {% endif %}
+
+                        {% if booking.rescheduleBookingUrl != null %}
+                        <a class="btn btn-default btn-xs" href="{{ booking.rescheduleBookingUrl }}"><i class="fa fa-calendar"></i> Reschedule</a>
+                        {% endif %}
+
+                        {% if booking.materialsUrl != null %}
+                        <a class="btn btn-default btn-xs" href="{{ booking.materialsUrl }}"><i class="fa fa-download"></i> Materials</a>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endif %}
+
+                <!-- webinars -->
+                {% if booking.topic != null %}
+                <li class="list-group-item">
+                    {% if booking.topic.imageThumbSrc != null %}
+                    {{ booking.topic.imageThumbSrc | img_tag:booking.topic.title, 'listing-thumb pull-left' }}
+                    {% endif %}
+                    <div>{{ store.webinarNoun }}: {{ booking.startTimeUTC | local_time }} </div>
+                    <div><a href="{{ booking.topic.url }}">{{ booking.topic.title | escape }}</a></div>
+                    <div class="button-group">
+                        <a class="btn btn-default btn-xs" href="{{ booking.accessUrl }}"><i class="fa fa-play-circle-o"></i> Join {{ store.webinarNoun }}</a>
+
+                        {% if booking.attachmentsUrl != null %}
+                        <a class="btn btn-default btn-xs" href="{{ booking.attachmentsUrl }}"><i class="fa fa-download"></i> Attachments</a>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {% if upcomingBookings == empty %}
+                <li class="list-group-item">
+                    None
+                </li>
+                {% endif %}
+
+                {% for package in packages %}
+                <li class="list-group-item">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Package: {{ package.packageName }} purchased {{ package.purchaseDate | local_time }}</div>
+                        <ul class="package-items list-group">
+                            {% for item in package.items %}
+                            {% if item.isBooked == false %}
+                            <li class="list-group-item">
+                                <button class="btn btn-success pull-right make-booking" data-listing="{{ item.listing.id }}" data-from-package="{{ package.id }}">Book Now</button>
+                                {{ item.listing.image220Url | img_tag:item.listing.title, 'listing-thumb pull-left' }}
+                                <div style="line-height: 40px"><a href="{{ item.listing.url }}">{{ item.listing.title }}</a></div>
+
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- video rentals -->
+        <div class="panel panel-default">
+            <div class="panel-heading">Video Rentals</div>
+            <ul class="list-group">
+                {% for video in rentalVideos %}
+                <li class="list-group-item">
+                    {{ video.thumbnail220Url | img_tag:video.title, 'listing-thumb pull-left' }}
+                    <div>{{ video.rentalExpire | local_time }}</div>
+                    <div><a href="{{ video.url }}">{{ video.title | escape }}</a></div>
+                </li>
+                {% endfor %}
+
+                {% if rentalVideos == empty %}
+                <li class="list-group-item">
+                    None
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <!-- subscriptions -->
+        {% if subscription %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Video Subscription
+                {% if subscription.cancellationUrl and subscription.payments.size > 0 %}
+                <a class="btn btn-default btn-xs pull-right" href="{{ subscription.cancellationUrl }}" target="_blank"><i class="fa fa-ban"></i> Cancel Subscription</a>
+                {% endif %}
+
+                {% if subscription.cancellationPost %}
+                <button type="button" class="btn btn-default btn-xs pull-right" onclick="confirmCancel('{{ subscription.cancellationPost }}');">
+                    <i class="fa fa-ban"></i> Cancel Subscription
+                </button>
+                {% endif %}
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <div>
+                        Status: {{ subscription.status }}
+                    </div>
+                    <div>
+                        Start date: {{ subscription.startDate | local_time }}
+                    </div>
+                    <div>
+                        {% if(subscription.payments.size > 0 %}
+                        {% if(subscription.Status == 'paid' %}
+                        Next payment date: {{ subscription.endDate | local_time }}
+                        {% else %}
+                        End date: {{ subscription.endDate | local_time }}
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </li>
+                {% if(subscription.payments.size > 0 %}
+                <li class="list-group-item">
+                    Payment history
+                </li>
+                {% for payment in subscription.payments %}
+                <li class="list-group-item">
+                    <div>{{ payment.Date | local_time }} {% if payment.transactionId %}[ID: {{ payment.transactionId }}]{% endif %}</div>
+                    <div>Amount: {{payment.amount | money }}</div>
+                </li>
+                {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Past Bookings</div>
+            <ul class="list-group">
+                {% for booking in pastBookings %}
+                <li class="list-group-item">
+                    {{ booking.listing.image220Url | img_tag:booking.listing.title, 'listing-thumb pull-left' }}
+
+                    <div>{{ booking.startTimeUTC | local_time }} </div>
+                    <div><a href="{{ booking.listing.url }}">{{ booking.listing.title | escape }}</a></div>
+                </li>
+                {% endfor %}
+
+                {% if pastBookings == empty %}
+                <li class="list-group-item">
+                    None
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Recordings</div>
+            <ul class="list-group">
+                {% for recording in recordings %}
+                <li class="list-group-item">
+                    {{ recording.listing.image220Url | img_tag:recording.listing.title, 'listing-thumb pull-left' }}
+                    <div>{{ recording.createdDate | local_time }} </div>
+                    <div><a href="{{ recording.listing.url }}">{{ recording.listing.title | escape }}</a></div>
+
+                    <div class="button-group">
+                        <div><a class="btn btn-default btn-xs" href="{{ recording.downloadUrl }}"><i class="fa fa-download"></i> Download</a></div>
+                    </div>
+                </li>
+                {% endfor %}
+
+                {% if recordings == empty %}
+                <li class="list-group-item">
+                    None
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function confirmCancel(postUrl) {
+        if (window.confirm("Are you sure you want to cancel your subscription?")) {
+            $.post(postUrl, function (data) {
+                location.reload();
+            }).fail(function () {
+                window.alert("Unable to cancel. An error has occurred.");
+            });
+        }
+    }
+</script>
+{% endblock %}

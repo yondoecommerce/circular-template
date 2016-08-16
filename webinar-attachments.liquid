@@ -1,0 +1,39 @@
+﻿{% extends base %}
+{% block title %}Attachments - {{ store.name }}{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Attachments</h2>
+        <div class="divider"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Attachments</strong></div>
+
+            {% if attachments == empty %}
+            <div>No Attachments.</div>
+            {% endif %}	
+
+            {% if attachments != empty %}
+            <ul class="list-group">
+                {% for attachment in attachments %}
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-3">{{ attachment.name | escape }}</div>
+                            <div class="col-md-7">{{ attachment.description }}</div>
+                            <div class="col-md-2 pull-right"><a class="btn btn-primary" role="button" href="{{ attachment.downloadUrl }}" download="{{ material.fileName }}"><i class="fa fa-download"></i> Download</a></div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% endif %}	
+        </div>
+    </div>
+</div>
+
+    
+{% endblock %}

@@ -1,0 +1,38 @@
+﻿{% extends base %}
+{% block title %}Recording - {{ store.name }}{% endblock %}
+{% block head %}
+{{ 'plugins/plugins-bundle.min.css' | asset_url | stylesheet_tag }}
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Recording</h2>
+        <div class="divider"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12" style="margin-bottom: 20px;">
+        <h4>Recording details.</h4>
+        {% if recording.listing != null %}
+        <p><strong>Session:</strong> <a href="{{ recording.listing.url }}" target="_blank">{{ recording.listing.title | escape }}</a></p>
+        <p><strong>With:</strong> {{ recording.listing.teamMember.fullname }}</p>
+        {% endif %}
+        {% if recording.webinar != null %}
+        <p><strong>Session:</strong> <a href="{{ recording.webinar.topic.url }}" target="_blank">{{ recording.webinar.topic.title | escape }}</a></p>
+        {% endif %}
+        <!-- "Start Now" sessions only have a time -->
+        <p><strong>Time:</strong> {{ recording.createdDate | local_time }}</p>
+        <div>
+            {% assign videoUrl = recording.videoUrl %}
+            {% include video-player%}
+        </div>
+    </div>
+</div>
+    
+{% endblock %}
+
+{% block scripts %}
+{% include video-player-scripts%}
+{% endblock %}

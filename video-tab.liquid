@@ -1,0 +1,80 @@
+﻿<div class="video-tab">
+    <div class="row top">
+        <div class="col-md-7">
+            <div class="left-panel">
+                <div class="latest-video">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            {% for video in videos limit:1 %}
+                            <div class="panel-title">{{ video.title | escape }}</div>
+
+                            {% assign noautoplay = true %}
+                            {% include video-player %}
+                            {% include video-player-scripts %}
+
+                            {% if video.descriptionHtml != empty %}
+                            <div class="description">
+                                {{ video.descriptionHtml }}
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="right-panel">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="popular-videos">
+                            <div class="panel-title">Popular Videos</div>
+                            {% for video in popularVideos %}
+                            <div class="popular-video">
+                                <div class="popular-video-image">
+                                    <a href="{{video.url}}" title="{{video.title}}">
+                                        <img src="{{video.thumbnail220Url}}" />
+                                    </a>
+                                </div>
+                                
+                                <div class="">
+                                    <a href="{{video.url}}" title="{{video.title}}">
+                                        <div class="popular-video-title one-line"><strong>{{video.title | escape}}</strong></div>
+                                    </a>
+                                    <div class="popular-video-description">{{video.descriptionHtml}}</div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="all-videos">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="panel-title">All Videos</div>
+
+                        <div class="video-list">
+                            {% for video in videos %}
+                            <div class="video-list-item">
+                                <a href="{{video.url}}" title="{{video.title}}">
+                                    <div class="title"><strong>{{video.title | escape}}</strong></div>
+                                    <img src="{{video.thumbnail220Url}}" />
+                                </a>
+                                <div class="description">{{video.descriptionHtml}}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

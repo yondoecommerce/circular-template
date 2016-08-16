@@ -1,0 +1,96 @@
+﻿{% extends base %}
+{% block title %}{{ package.title }} - {{ store.name }}{% endblock %}
+{% block head %}
+{{ 'plugins/magnific-popup/magnific-popup.min.css' | asset_url | stylesheet_tag }}
+{{ templatePage | meta_tags }}
+{% endblock %}
+{% block content %}
+
+<div class="row margin-top-20">
+    <!-- Image and main body -->
+    <div class="col-md-7">
+        <div class="left-panel">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="image-wrapper">{{ package.image580Url | img_tag: package.title}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right booking info panel -->
+    <div class="col-md-5">
+        <div class="right-panel">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">{{ package.title | escape }}</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="details">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><span class="title">Price:</span> {{ package.price | money }}</p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <p><button class="btn btn-block btn-primary btn-lg purchase-package" data-package="{{ package.id }}">Purchase</button></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if package.descriptionHtml %}
+                    <div class="description">
+                        <p>{{ package.descriptionHtml }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if package.prerequisiteHtml %}
+                    <div class="prerequisite">
+                        <p><span class="title">Prerequisite:</span></p>
+                        <p>{{ package.prerequisiteHtml }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row margin-top-20">
+    <!-- Image and main body -->
+    <div class="col-md-12">
+        <div class="inclulded">
+            <div class="panel panel-default">
+                <div class="panel-heading">Included in this package</div>
+                <div class="panel-body">
+                    {% for listing in package.listings %}
+                    <div class="inclulded-listing">
+                        <div class="col-md-2 text-center">
+                            <a href="{{listing.url}}"><img src="{{listing.image220Url}}" /></a>
+                        </div>
+
+                        <div class="col-md-10">
+                            <div class="details">
+                                <div class="title one-line"><a href="{{listing.url}}">{{listing.title}}</a></div>
+                                <div class="description">{{listing.descriptionHtml}}</div>
+                                <span class="duration pull-right">{{listing.duration}} mins</span>
+                                <div class="team-member">
+                                    <a href="{{listing.teamMember.url}}"><img src="{{listing.teamMember.profileThumb32Url}}" />{{listing.teamMember.displayName}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+{{ 'plugins/magnific-popup/jquery.magnific-popup.min.js' | asset_url | script_tag }}
+{% endblock %}

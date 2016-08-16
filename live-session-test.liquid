@@ -1,0 +1,137 @@
+﻿{% extends base %}
+{% block title %}Live Session Test - {{ store.name }}{% endblock %}
+{% block content %}
+
+<style>
+    [ng\:cloak], [ng-cloak], .ng-cloak {
+        display: none !important;
+    }
+</style>
+
+<div ng-app="connectivityTool" ng-controller="ConnectivityToolCtrl" ng-cloak style="margin-bottom: 50px">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Live Session Test</h2>
+            <div class="divider"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <button class="btn btn-success btn-lg" ng-click="OTDoc.startTests()" ng-disabled="!OTDoc.configLoaded"><i class="fa fa-play"></i> Run Test</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="" ng-repeat="test in testConfig">
+                <div class="divider"></div>
+                <div class="row" style="font-size:24px;">
+                    <div class="col-sm-7">
+                        <span ng-show="!OTDoc.configLoaded">Loading...</span>
+                        <span ng-show="OTDoc.configLoaded"><span ng-bind="test.display.name"></span></span>
+
+                        <div ng-show="test.testResult && test.testResult.errorMessage" style="font-size:16px;">
+                            Message: <span ng-bind-html="test.testResult.errorMessage"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <span ng-show="!OTDoc.configLoaded"><i class="fa fa-spinner fa-spin"></i></span>
+                        <span ng-show="test.testing"><i class="fa fa-spinner fa-spin"></i></span>
+
+                        <div ng-show="test.testResult">
+                            <span ng-bind-html="test.testResult.passed"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="divider"></div>
+                <div class="row" style="font-size:24px;">
+                    <div class="col-sm-7">
+                        <span ng-show="!OTDoc.configLoaded">Loading...</span>
+                        <span ng-show="OTDoc.configLoaded">Browser Compatibility</span>
+
+                        <div ng-show="browserCompatibility.errorMessage" style="font-size:16px;">
+                            Message: <span ng-bind-html="browserCompatibility.errorMessage"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <span ng-show="!OTDoc.configLoaded"><i class="fa fa-spinner fa-spin"></i></span>
+                        <span ng-show="test.testing"><i class="fa fa-spinner fa-spin"></i></span>
+
+                        <div ng-show="browserCompatibility.passed">
+                            <span ng-bind-html="browserCompatibility.passed"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal" id="upgrade-browser" >
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            
+                            <div class="modal-body text-center">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h2>Please upgrade your browser</h2>
+                                <h4>Install or launch one of the following browsers.</h4>
+
+                                <div class="row" style="margin-top: 20px;">
+                                    <div class="col-xs-4 col-xs-offset-2">
+                                        <a href="https://www.google.com/chrome/" target="_blank">
+                                            <img src="/Content/image/chrome.png" style="max-width:100%" />
+                                            <div style="margin-top:10px; font-size: 17px;">Chrome</div>
+                                        </a>
+                                        <div style="margin-top:10px;">Windows & Mac</div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank">
+                                            <img src="/Content/image/firefox.png" style="max-width:100%" />
+                                            <div style="margin-top:10px; font-size: 17px;">Firefox</div>
+                                        </a>
+                                        <div style="margin-top:10px">Windows & Mac</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal" id="go-to-pc">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+
+                            <div class="modal-body text-center">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h2>Please test on your PC or Mac</h2>
+                                <h4>The live session is incompatible with your mobile device.</h4>
+                                
+                                <div class="row" style="margin-top: 20px;">
+                                    <div class="col-xs-6">
+                                        <img src="/Content/image/window-pc.png" style="width:100%" />
+                                        <div style="margin-top:10px">Windows PC or Laptop</div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <img src="/Content/image/macbook.png" style="width:100%" />
+                                        <div style="margin-top:10px">Apple iMac or MacBook</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+</script>
+<script src="//static.opentok.com/v2/js/opentok.js"></script>
+<script src="/Content/shared/plugins/angular/angular.min.js"></script>
+<script src="/Content/shared/plugins/angular/angular-sanitize.min.js"></script>
+<script src="/Content/shared/plugins/detect/detect.min.js"></script>
+<script src="/Content/sdk/live-session-test.js"></script>
+{% endblock %}

@@ -1,0 +1,51 @@
+﻿{% extends base %}
+{% block title %}Cancel Booking - {{ store.name }}{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Cancel Booking</h2>
+        <div class="divider"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <form role="form" method="POST">
+            <h4>Please check the booking details.</h4>
+            <p><strong>Session:</strong> <a href="{{ booking.listing.url }}" target="_blank">{{ booking.listing.title | escape }}</a></p>
+            <p><strong>Time:</strong> {{ booking.startTimeUtc | local_time }}</p>
+            <p><strong>Duration:</strong> {{ booking.listing.duration }} minutes</p>
+            <p><strong>With:</strong> {{ booking.listing.teamMember.displayname }}</p>
+            <p>
+                <div class="form-group">
+                    <label for="reason">Reason:</label>
+                    <input type="text" name="reason" class="form-control" id="reason" placeholder="Enter reason">
+                </div>
+            </p>
+
+            {% if successMessage != null %}
+            <div class="alert alert-success">
+                {{ successMessage }}
+            </div>
+            {% endif %}
+
+            {% if errorMessage != null %}
+            <div class="alert alert-danger">
+                {{ errorMessage }}
+            </div>
+            {% endif %}
+            
+            {% if successMessage != null or errorMessage == "Booking is already cancelled." %}
+                <button class="btn btn-danger" disabled="disabled">Confirm Cancellation</button>
+            {% else %}
+                <button class="btn btn-danger">Confirm Cancellation</button>
+            {% endif %}
+
+            <input type="text" name="slotid" value="{{ booking.id }}" hidden="hidden"/>
+            <input type="text" name="code" value="{{ booking.secureCode }}" hidden="hidden"/>
+        </form>
+    </div>
+</div>
+    
+{% endblock %}

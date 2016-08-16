@@ -1,0 +1,6 @@
+﻿#options skipremin,outputbundleonly
+video-js/video-js.css
+video-js-resolutions/video-js-resolutions.css
+video-js-watermark/videojs.watermark.css
+video-js-addThis/videojs.addThis.css
+plugins.css

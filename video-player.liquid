@@ -1,0 +1,79 @@
+﻿<div class="video-player">
+    <!-- play normal video -->
+    {% if videoUrl != null %}
+    <video id="video-player" class="video-js vjs-default-skin" controls {% if noautoplay %}{% else %}autoplay{% endif %} preload="auto" width="auto" height="auto" data-setup="{}" style="display:none;">
+        <source src="{{ videoUrl}}" type='video/mp4'>
+        <p>Video Playback Not Supported</p>
+    </video>
+    {% endif %}
+
+    <!-- play embed or vod -->
+    {% if video != null %}
+        {% if video.availableToWatch == true %}
+        <video id="video-player" class="video-js vjs-default-skin" controls preload="none" width="auto" height="auto" poster="{{ video.thumbnail720Url }}" data-setup="{}" style="display:none;">
+            {% for asset in video.assets %}
+            <source src="{{ asset.url }}" type='video/mp4' data-res="{{ asset.type }}">
+            {% endfor %}
+            <p>Video Playback Not Supported</p>
+        </video>
+        {% else %}
+            {% if video.previewVideoUrl360p != null %}
+            <video id="video-player" class="video-js vjs-default-skin" controls {% if noautoplay %}{% else %}autoplay{% endif %} preload="auto" width="auto" height="auto" data-setup="{}" style="display:none;">
+                <source src="{{ video.previewVideoUrl360p}}" type='video/mp4'>
+                <p>Video Playback Not Supported</p>
+            </video>
+            {% else %}
+            <a data-toggle="modal" data-target=".video-preview-modal" id="video-player-thumb">
+                <div class="video-js vjs-default-skin preview-thumbnail">
+                    <!--show actual preview image if it is not embed for responsive image resize -->
+                    {% if templatePage != 'embed-video' %}
+                    <div class="img-responsive img-thumbnail img-thumbnail-video">{{ video.thumbnail720Url | img_tag: video.title}}</div>
+                    {% endif %}
+                    <div class="vjs-big-play-button" role="button" aria-live="polite" tabindex="0" aria-label="play video"><span aria-hidden="true"></span></div>
+                </div>
+            </a>
+            {% endif %}
+        {% endif %}
+
+        <div class="right-click-alert" style="display: none; border-radius:5px; background-color: #fff; border: 1px solid #eee; padding: 5px 10px; z-index:5; width: 170px;">
+            <div class="text-center">
+                <a href="{{siteInfo.AlternateHomePage}}"><small class="text-muted powered-by">Powered by <img src="/Content/logo/{{siteInfo.SiteName}}-logo-light-77x17.png" alt="{{siteInfo.SiteName}}" /></small></a>
+            </div>
+        </div>
+
+        <div class="modal fade video-preview-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header" style="border:none;">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    </div>
+
+                    <div class="modal-body" style="text-align:center; padding: 20px 50px 50px 50px;">
+                        {% include video-purchase-partial %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="end-frame" style="display:none;">
+            <div class="end-frame" style="display:none;">
+                <div class="panel">
+                    {% include video-purchase-partial %}
+                </div>
+            </div>
+        </div>
+    
+	{% endif %}
+    <script>
+        try{
+            // remove video sources for PhantomJS so screenshots render correctly
+            if (navigator.userAgent.indexOf('PhantomJS') > 0) {
+                // remove video sources
+                $('video source').remove();
+                $('video p').remove();
+            }
+        }
+        catch(err){}
+        
+    </script>
+</div>

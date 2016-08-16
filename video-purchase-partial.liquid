@@ -1,0 +1,57 @@
+﻿<div class="video-purchase">
+    {% if video.subscriptionAvailable %}
+    <div class="section title">
+        You must have a current subscription to watch this video.
+        Subscribe now for 
+        {% if video.subscriptionPrice > 0 %}
+        only {{ video.subscriptionPrice | money }} per month.
+        {% else %}
+        <strong>free.</strong>
+        {% endif %}
+    </div>
+
+    <div class="section">
+      <div class="row">
+        <div class="col-sm-6 col-sm-offset-3 text-center">
+          <button class="btn btn-primary btn-lg btn-block video-subscription" data-video="{{ video.id }}">Subscribe</button>  
+        </div>
+      </div>
+    </div>
+
+    <div class="section hidden-xs">
+        Having a subscription gives you unlimited access to {% if video.subscribeAllVideos %}all{% else %}most{%endif%}  videos in our video library.
+    </div>
+    {% endif %}
+
+    {% if video.rentalAvailable %}
+    <div class="section title">
+        You can rent this video for 
+        {% if video.rentalPrice > 0 %}
+        {{ video.rentalPeriod }} days for only {{ video.rentalPrice | money }}.
+        {% else %}
+        <strong>free.</strong>
+        {% endif %}
+    </div>
+
+    <div class="section">
+      <div class="row">
+        <div class="col-sm-6 col-sm-offset-3 text-center">
+          <button class="btn btn-primary btn-lg btn-block video-rental" data-video="{{ video.id }}">Rent</button>
+        </div>
+      </div>
+    </div>
+
+    {% endif %}
+
+    {% if ShowVideoUrl %}
+    <div class="section">
+        <h5><a href="{{store.subdomainUrl}}{{video.url}}" target="_blank">Go to Video</a></h5>
+    </div>
+    {% endif %}
+
+    {% if video.helpLink %}
+    <div class="section">
+        <h5><a href="{{video.helpLink}}" target="_blank">How does it work?</a></h5>
+    </div>
+    {% endif %}
+</div>
