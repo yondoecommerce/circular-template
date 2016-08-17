@@ -62,7 +62,7 @@
                {% for teamMember in teamMembers %}
                <div class="team-member-card">
                     <div class="details">                
-                        <a href="{{ teamMember.url }}" title="{{ teamMember.fullName }}">
+                        <a href="{{ teamMember.url }}" title="{{ teamMember.fullName | escape }}">
                             <div style="float:left">{{ teamMember.profileThumbUrl | img_tag: teamMember.fullName }}</div>
                             <div class="display-name one-line">{{ teamMember.fullName | escape }}</div>
                         </a>

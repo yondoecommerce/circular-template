@@ -100,7 +100,7 @@
                     {% for material in listing.materials %}
                     <div class="material">
                         <p><span class="material-title">{{ material.name | escape }}</span></p>
-                        <p class="material-description">{{ material.description }}</p>
+                        <p class="material-description">{{ material.description | escape }}</p>
                         <div class="material-filename">{{ material.fileName | escape }}</div>
                     </div>
                     {% endfor %}

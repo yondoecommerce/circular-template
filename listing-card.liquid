@@ -2,7 +2,7 @@
 <!-- listing card -->
 <div class="long-card">
     <div class='card-info'>
-        <div class="title one-line"><a href='{{listing.url}}'>{{listing.title}}</a></div>
+        <div class="title one-line"><a href='{{listing.url}}'>{{listing.title | escape}}</a></div>
         <div class="description">{{listing.descriptionHtml}}</div>
         <div class="card-image">
             <div class="card-image-wrapper">
@@ -30,7 +30,7 @@
 <!-- package card -->
 <div class="long-card">
     <div class='card-info'>
-        <div class="title one-line"><a href='{{listing.url}}'>{{listing.title}}</a></div>
+        <div class="title one-line"><a href='{{listing.url}}'>{{listing.title | escape}}</a></div>
         <div class="description">{{listing.descriptionHtml}}</div>
         <div class="card-image">
             <div class="card-image-wrapper">

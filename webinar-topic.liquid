@@ -52,7 +52,7 @@
                 {% for attachment in webinarTopic.attachments %}
                 <div class="attachment">
                     <p><span class="material-title">{{ attachment.name | escape }}</span></p>
-                    <p class="material-description">{{ attachment.description }}</p>
+                    <p class="material-description">{{ attachment.description | escape  }}</p>
                     <div class="material-filename">{{ attachment.fileName | escape }}</div>
                 </div>
                 {% endfor %}

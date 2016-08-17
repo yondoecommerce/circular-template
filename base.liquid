@@ -25,7 +25,7 @@
                         <a href="/">{{ store.selectedLogo | img_tag:store.name, store.selectedLogoClass }}</a>
                         {% else %}
                         <div class="navbar-brand">
-                            <a href="/" title="{{ store.name }}">
+                            <a href="/" title="{{ store.name | escape }}">
                                 {{ store.name| escape }}
                             </a>
                         </div>
