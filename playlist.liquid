@@ -1,0 +1,274 @@
+﻿{% extends base %}
+{% block title %}{{ playlist.title }} - {{ store.name }}{% endblock %}
+{% block head %}
+{{ templatePage | meta_tags }}
+{% endblock %}
+{% block content %}
+
+{% if playlist.availableToWatch %}
+<div class="row margin-top-20">
+    <!-- Image and main body -->
+    <div class="col-md-12">
+        <div class="embed-responsive embed-responsive-16by9">
+            <iframe name="playlist" id="playlist" src="/playlist/{{playlist.id}}/embed" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row margin-top-20">
+    <!-- Image and main body -->
+    <div class="col-md-7">
+        <div class="left-panel">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="image-wrapper">{{ playlist.image720Url | img_tag: playlist.title}}</div>
+
+                    {% if playlist.descriptionHtml %}
+                    <div class="description">
+                        <p>{{ playlist.descriptionHtml }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="right-panel">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">{{ playlist.title | escape }}</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="price-section">
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% if playlist.rentalAvailable %}
+                                <div class="row price-wrapper">
+                                    <div class="col-md-6">
+                                      <div class="price">{{playlist.rentalPrice | money}} {% if playlist.rentalPrice > 0 %}/ {{ playlist.rentalPeriod | period }} {% endif %}</div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                      <button class="btn btn-block btn-primary btn-lg rent-playlist" data-playlist="{{ playlist.id }}">Rent</button>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if playlist.purchaseAvailable %}
+                                <div class="row price-wrapper">
+                                    <div class="col-md-6">
+                                      <div class="price">{{playlist.purchasePrice | money}}</div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                      <button class="btn btn-block btn-warning btn-lg purchase-playlist" data-playlist="{{ playlist.id }}">Purchase</button>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if playlist.subscriptionAvailable %}
+                                <div class="row price-wrapper">
+                                    <div class="col-md-6">
+                                      <div class="price">{{playlist.subscriptionPrice | money}}</div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                      <button class="btn btn-block btn-success btn-lg video-subscription" data-playlist="{{ playlist.id }}">Subscribe</button>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="details">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p><span class="title">Total Duration:</span> {{ playlist.duration | duration_to_string}}</p>
+                                <p><span class="title">Video{% if playlist.videoCount > 1 %}s{% endif %}:</span> {{ playlist.videoCount }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row margin-top-20">
+    <!-- Image and main body -->
+    <div class="col-md-12">
+        <div class="playlist-items">
+            <div class="panel panel-default">
+                <div class="panel-heading">Includes</div>
+                <div class="panel-body">
+                    {% for item in playlist.playlistItems %}
+                    <div class="playlist-item">
+                        {% if item.Type == 'Section' %}
+                        <div class="section section-title">
+                            {{item.sectionTitle}}
+                        </div>
+                        {% elseif item.Type == 'Video' %}
+                            {% if playlist.availableToWatch == true %}
+                            <a class="video" href="/playlist/{{playlist.id}}/embed#/v/{{item.video.id}}" target="playlist" id="playlist-video-{{item.video.id}}">
+                                <div class="video-details">
+                                    {% if playlist.availableToWatch == false and item.isPreview == true %}
+                                    <span class="label label-success">Preview</span>
+                                    {% endif %}
+                                    <span class="duration">{{ item.video.duration | duration_to_string}}</span>
+                                </div>
+
+                                <div class="play-icon">
+                                    <i class="fa"></i>
+                                </div>
+
+                                <div class="video-thumb">
+                                    <img src="{{item.video.thumbnail220Url}}" />
+                                </div>
+
+                                <div class="video-title one-line">
+                                    {{item.video.title}}
+                                </div>
+                            </a>
+                            {% else %}
+                            <a class="video" onclick="return videoModal.showModal('{{item.video.title}}', {{item.video.id}});" id="playlist-video-{{item.video.id}}">
+                                <div class="video-details">
+                                    {% if item.isPreview == true %}
+                                    <span class="label label-success">Preview</span>
+                                    {% endif %}
+                                    <span class="duration">{{ item.video.duration | duration_to_string}}</span>
+                                </div>
+
+                                <div class="play-icon">
+                                    <i class="fa"></i>
+                                    <!--{% if item.video.playback != null and item.video.playback.fullyWatched == true %}<i class="fa fa-check-circle-o watched" title="Watched"></i>{% endif %}
+                                    {% if item.video.playback != null and item.video.playback.fullyWatched == false %}<i class="fa fa-play-circle-o watched" title="Partially Watched"></i>{% endif %}
+                                    {% if item.video.playback == null %}<i class="fa fa-play-circle-o" title="Unwatched"></i>{% endif %}-->
+                                </div>
+
+                                <div class="video-thumb">
+                                    <img src="{{item.video.thumbnail220Url}}" />
+                                </div>
+
+                                <div class="video-title one-line">
+                                    {{item.video.title}}
+                                </div>
+                            </a>
+                            {% endif %}
+
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="video-details" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="return videoModal.hideModal();">&times;</button>
+                <h4 class="modal-title"><span class="title"></span> <i class="loading fa fa-spinner fa-pulse"></i></h4>
+            </div>
+            <div class="modal-body">
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe id="video-details-iframe" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+    var videoModal = {
+        init:function(){
+            document.getElementById('video-details-iframe').onload = function () {
+                videoModal.srcLoaded();
+            };
+        },
+        showModal: function (vodTitle, vodId) {
+            $("#video-details .title").text(vodTitle);
+            $("#video-details  iframe").attr('src', "/video/" + vodId + "/embed/");
+            $("#video-details").modal('show');
+            $(".loading").show();
+        },
+        hideModal: function () {
+            $("#video-details .title").text("");
+            $("#video-details  iframe").attr('src', "");
+            $("#video-details").modal('hide');
+        },
+        srcLoaded: function () {
+            $(".loading").hide();
+        }
+    };
+    videoModal.init();
+
+    var watchStatus = {
+        init: function(playlist){
+            this.playlist = playlist;
+            // Create IE + others compatible event handler
+            var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+            var eventer = window[eventMethod];
+            var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+            // Listen to message from playlist iframe
+            eventer(messageEvent, function (e) {
+                if (typeof e.data === 'string' || e.data instanceof String) {
+                    var playback = JSON.parse(e.data);
+                    var playlistItems = watchStatus.playlist.playlistItems
+                    for (var i = 0, len = playlistItems.length; i < len; i++) {
+                        if(playlistItems[i].type == "Video" && playlistItems[i].video.id == playback.videoOnDemandId) {
+                            playlistItems[i].video.playback = playback;
+                        }
+                    }
+
+                    watchStatus.refresh();
+                }
+            }, false);
+
+            this.refresh();
+        },
+        refresh: function(){
+            var playlistItems = this.playlist.playlistItems;
+
+            for (var i = 0, len = playlistItems.length; i < len; i++) {
+                if(playlistItems[i].type == "Video") {
+                    //fa-play-circle-o watched  fa-check-circle-o
+                    var _class, _title;
+                    if(playlistItems[i].video.playback){
+                        if(playlistItems[i].video.playback.fullyWatched){
+                            _class = "fa-check-circle-o watched";
+                            _title = "Fully Watched";
+                        }
+                        else{
+                            _class = "fa-play-circle-o watched";
+                            _title = "Partially Watched";
+                        }
+                    }
+                    else{
+                        _class = "fa-play-circle-o";
+                        _title = "Unwatched";
+                    }
+                
+                    $("#playlist-video-" + playlistItems[i].video.id + " .play-icon i").addClass(_class);
+                    $("#playlist-video-" + playlistItems[i].video.id + " .play-icon i").attr('title', _title);
+                }
+            }
+        }
+    };
+
+    watchStatus.init({{ playlist | json:'playlist' }});
+
+    
+</script>
+{% endblock %}

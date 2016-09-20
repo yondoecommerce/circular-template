@@ -1,5 +1,6 @@
 {
   "name" : "circular-template",
   "author": "Yondo Pty Ltd",
-  "version" : "18.0",
+  "version" : "18.3",
+  "features": ["Live 1-to-1", "Video On Demand", "Webinar", "Playlist"]
 }
