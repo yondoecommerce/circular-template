@@ -30,17 +30,34 @@
     padding-bottom: 75%;
 }
 
+
 /* long size card */
-.long-card {          
+.long-card.playlist {          
     .card-info{
+        .card-image-wrapper{
+            border-radius: 0;
+        }
+
         .playlist-price{
             min-height: 20px;
+            span{
+                margin: 0 5px;
+            }
         }
     }
 }
 
 /* Playlist Page */
 .playlist {
+    .btn-primary-dark{
+        background-color: @brand-primary-dark;
+        border-color: darken(@brand-primary-dark, 5%);
+    }
+
+    .playlist-wrapper{
+        background-color: #000;
+    }
+
     .panel{
         .panel-heading{
             border: none;
@@ -55,8 +72,7 @@
             }
         }
     }
-
-    
+        
     .right-panel {
         .panel{
             .panel-title{
@@ -92,7 +108,25 @@
         }
     }
 
-    
+    .description{
+        font-size: 13px;
+        font-weight: @font-light;
+
+        .collapse {
+            display:block !important; 
+            min-height: 150px !important;  
+            height: 150px !important; 
+            overflow: hidden;
+        }
+
+        .collapsing {
+            min-height: 150px !important;  
+        }
+
+        .collapse-button-wrapper{
+        }
+    }  
+
     .playlist-items {
         .playlist-item {
             clear: both;

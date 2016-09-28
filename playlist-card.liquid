@@ -1,7 +1,7 @@
 ﻿<div class="long-card playlist">
     <div class='card-info'>
         <div class="title one-line"><a href='{{playlist.url}}'>{{playlist.title | escape}}</a></div>
-        <div class="description">{{playlist.descriptionHtml}}</div>
+        <div class="description">{{playlist.videoCount}} Video{%if playlist.videoCount > 1 %}s{% endif %} <br />  {{playlist.duration | duration_to_string}}</div>
         <div class="card-image">
             <div class="card-image-wrapper">
                 <a href="{{playlist.url}}">
@@ -23,16 +23,12 @@
             </span>
             {% endif %}
         </div>
-      
-        <div class="details">         
-            <div>{{store.playlistNoun}} of {{playlist.videoCount}}</div>
-        </div>
 
-        
+
         <div class="register">
-            <a class='btn btn-primary btn-lg' href="{{playlist.url}}">Purchase</a>
+            <a class='btn btn-primary btn-lg' href="{{playlist.url}}">View Details</a>
         </div>
-
+              
         <div class="additional-info">
             <a href="{{playlist.url}}">Additional Info <i class="fa fa-angle-double-right"></i></a>
         </div>

@@ -1,0 +1,297 @@
+﻿{% for item in playlist.playlistItems %}
+<div class="playlist-item">
+    {% if item.Type == 'Section' %}
+    <div class="section section-title">
+        {{item.sectionTitle}}
+    </div>
+    {% elseif item.Type == 'Video' %}
+        <button type="button" class="video-rental" style="display:none" data-video="{{ item.video.id }}" id="video-rental-{{item.video.id}}"></button>        
+        {% if playlist.availableToWatch == true %}
+        <a class="video" href="/playlist/{{playlist.id}}/embed#/v/{{item.video.id}}" target="playlist" id="playlist-video-{{item.video.id}}">
+            <div class="video-details">
+                {% if item.isPreview == true %}
+                <span class="label label-success">Preview</span>
+                {% endif %}
+                <span class="duration">{{ item.video.duration | duration_to_string}}</span>
+            </div>
+
+            <div class="play-icon">
+                <i class="fa"></i>
+            </div>
+
+            <div class="video-thumb">
+                <img src="{{item.video.thumbnail220Url}}" />
+            </div>
+
+            <div class="video-title one-line">
+                {{item.video.title}}
+            </div>
+        </a>
+        {% else %}
+            {% if item.video.assets != null and video.published or item.isPreview %}
+            <a class="video" onclick="return videoModal.showModal({{item.video.id}});" id="playlist-video-{{item.video.id}}">
+                <div class="video-details">
+                    {% if item.isPreview == true %}
+                    <span class="label label-success">Preview</span>
+                    {% endif %}
+                    <span class="duration">{{ item.video.duration | duration_to_string}}</span>
+                </div>
+
+                <div class="play-icon">
+                    <i class="fa"></i>
+                </div>
+
+                <div class="video-thumb">
+                    <img src="{{item.video.thumbnail220Url}}" />
+                </div>
+
+                <div class="video-title one-line">
+                    {{item.video.title}}
+                </div>
+            </a>
+            {% else %}    
+            <a class="video" data-toggle="collapse" href="#playlist-video-{{item.video.id}}-details" id="playlist-video-{{item.video.id}}">
+                <div class="video-details">
+                    {% if item.isPreview == true %}
+                    <span class="label label-success">Preview</span>
+                    {% endif %}
+                    <span class="duration">{{ item.video.duration | duration_to_string}}</span>
+                </div>
+
+                <div class="play-icon">
+                    <i class="fa"></i>
+                </div>
+
+                <div class="video-thumb">
+                    <img src="{{item.video.thumbnail220Url}}" />
+                </div>
+
+                <div class="video-title one-line">
+                    {{item.video.title}}
+                </div>
+            </a>
+
+            <div class="collapse" id="playlist-video-{{item.video.id}}-details">
+                <div class="description"  style="margin-left:60px;">
+                    {% if video.descriptionHtml != empty %}
+                    {{item.video.descriptionHtml}}
+                    {% endif %}
+                </div>
+            
+                {% if item.video.published == true %}
+                <div class="text-center" style="margin-top: 10px;">
+                    <a class="btn btn-primary btn-sm" href="{{item.video.url}}">View Details</a>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% endif %}
+
+    {% endif %}
+</div>
+{% endfor %}
+
+<button type="button" class="video-subscription" style="display:none" data-video="" id="video-subscription"></button>
+
+<div class="modal fade" id="video-details" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" onclick="return videoModal.hideModal();">&times;</button>
+                <h4 class="modal-title"><span class="title"></span> <i class="loading fa fa-spinner fa-pulse"></i></h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-center" id="video-duration"></p>
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe id="video-details-iframe" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+                    <div id="video-details-thumbnail">
+                        <img style="width:100%" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var playlist = {{ playlist | json:'playlist' }};
+    function secondsToHms(d) {
+        d = Number(d);
+        var h = Math.floor(d / 3600);
+        var m = Math.floor(d % 3600 / 60);
+        var s = Math.floor(d % 3600 % 60);
+        return ((h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s < 10 ? "0" : "") + s);
+    };
+
+    function secondstoTimeString(duration) {
+        //less then an minute
+        if (duration < 3600) {
+            return secondsToHms(duration);
+        }
+            //more than an hour
+        else {
+            var hour = duration / 3600;
+            return Math.round(hour * 10) / 10 + " hour" + (hour > 1 ? "s" : "");
+        }
+    };
+
+    var videoModal = {
+        init:function(playlist){
+            document.getElementById('video-details-iframe').onload = function () {
+                videoModal.srcLoaded();
+            };
+            this.playlist = playlist;
+        },
+        showModal: function (vodId) {
+            var video;
+            var playlistItem;
+            for(var i=0; i< this.playlist.playlistItems.length; i++){
+                if(playlist.playlistItems[i].type == "Video" && playlist.playlistItems[i].video.id == vodId){
+                    playlistItem = playlist.playlistItems[i];
+                    video = playlistItem.video;
+                    break;
+                }                    
+            }
+
+            function showDetails(){
+                $("#video-details iframe").attr('src', "/video/" + vodId + "/embed?external=0&playlistitemid=" + playlistItem.id);
+                $("#video-details-thumbnail").hide();
+                $("#video-duration").hide();
+                $("#video-details-iframe").show();
+                $(".loading").show();
+            }
+
+            if(playlistItem.isPreview){
+                showDetails();
+            }
+            else{
+                if(video.published){
+                    showDetails();
+                }
+                else{                
+                    $(".loading").hide();
+                    $("#video-details-thumbnail").show();
+                    $("#video-details-iframe").hide();
+                    $("#video-details-thumbnail img").attr('src', video.thumbnail720Url);
+                    $("#video-duration").text(secondstoTimeString(video.duration));
+                }
+            }
+            
+            $("#video-details .title").text(video.title);
+            $("#video-details").modal('show');
+        },
+        hideModal: function () {
+            $("#video-details .title").text("");
+            $("#video-details  iframe").attr('src', "");
+            $("#video-details").modal('hide');
+        },
+        srcLoaded: function () {
+            $(".loading").hide();
+        }
+    };
+    videoModal.init(playlist);
+
+    var watchStatus = {
+        init: function(playlist){
+            this.playlist = playlist;           
+
+            this.refresh();
+        },
+        refresh: function(){
+            var playlistItems = this.playlist.playlistItems;
+
+            for (var i = 0, len = playlistItems.length; i < len; i++) {
+                if(playlistItems[i].type == "Video") {
+                    //fa-play-circle-o watched  fa-check-circle-o
+                    var _class, _title;
+                    if(playlistItems[i].video.playback){
+                        if(playlistItems[i].video.playback.fullyWatched){
+                            _class = "fa-check-circle-o watched";
+                            _title = "Fully Watched";
+                        }
+                        else{
+                            _class = "fa-play-circle-o watched";
+                            _title = "Partially Watched";
+                        }
+                    }
+                    else{
+                        _class = "fa-play-circle-o";
+                        _title = "Unwatched";
+                    }
+                
+                    $("#playlist-video-" + playlistItems[i].video.id + " .play-icon i").addClass(_class);
+                    $("#playlist-video-" + playlistItems[i].video.id + " .play-icon i").attr('title', _title);
+                }
+            }
+        }
+    };
+
+    watchStatus.init(playlist);
+
+    // Create IE + others compatible event handler
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+    // Listen to message from playlist iframe
+    eventer(messageEvent, function (e) {
+        if (typeof e.data === 'string' || e.data instanceof String) {
+
+            var data = e.data;
+            // handle message from iframe to show cart
+            if(data.includes("videorent") || data.includes("videosubscription")){
+                if(data.includes("videorent")){
+                    var videoId = data.split(':')[1];
+                    $("#video-rental-" + videoId).click();
+                }
+                else{
+                    $("#video-subscription").click();
+                }
+            }
+            else{
+                // handle message from iframe update playback
+                try{
+                    var playback = JSON.parse(e.data);
+                    var playlistItems = watchStatus.playlist.playlistItems
+                    for (var i = 0, len = playlistItems.length; i < len; i++) {
+                        if(playlistItems[i].type == "Video" && playlistItems[i].video.id == playback.videoOnDemandId) {
+                            playlistItems[i].video.playback = playback;
+                        }
+                    }
+
+                    watchStatus.refresh();
+                }
+                catch(e){
+
+                }
+            }
+        }
+    }, false);
+
+    //toggle function to collapse description section
+    $(function () {        
+        if($(".description .collapse-inner").height() < 150){
+            $(".description .collapse").removeClass("collapse");
+            $(".collapse-button-wrapper").hide();
+        }
+        else{
+            if($(".description .collapse").height() > $(".collapse-inner").height()){
+            }
+        }
+
+        var collapseToggleButton;
+        $(".collapse-button-wrapper button").click(function(){
+            collapseToggleButton = !collapseToggleButton;
+
+            var html;
+            if(collapseToggleButton){
+                html = '<i class="fa fa-angle-up" aria-hidden="true"></i> Description';
+            }
+            else{
+                html = '<i class="fa fa-angle-down" aria-hidden="true"></i> Description';
+            }
+
+            $(".collapse-button-wrapper button").html(html);
+        });
+    });
+</script>
