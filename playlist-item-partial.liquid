@@ -4,8 +4,7 @@
     <div class="section section-title">
         {{item.sectionTitle}}
     </div>
-    {% elseif item.Type == 'Video' %}
-        <button type="button" class="video-rental" style="display:none" data-video="{{ item.video.id }}" id="video-rental-{{item.video.id}}"></button>        
+    {% elseif item.Type == 'Video' %}    
         {% if playlist.availableToWatch == true %}
         <a class="video" href="/playlist/{{playlist.id}}/embed#/v/{{item.video.id}}" target="playlist" id="playlist-video-{{item.video.id}}">
             <div class="video-details">
@@ -20,7 +19,7 @@
             </div>
 
             <div class="video-thumb">
-                <img src="{{item.video.thumbnail220Url}}" />
+                <img src="{{item.video.thumbnail220Url | img_placeholder_tag}}" />
             </div>
 
             <div class="video-title one-line">
@@ -42,7 +41,7 @@
                 </div>
 
                 <div class="video-thumb">
-                    <img src="{{item.video.thumbnail220Url}}" />
+                    <img src="{{item.video.thumbnail220Url | img_placeholder_tag}}" />
                 </div>
 
                 <div class="video-title one-line">
@@ -63,7 +62,7 @@
                 </div>
 
                 <div class="video-thumb">
-                    <img src="{{item.video.thumbnail220Url}}" />
+                    <img src="{{item.video.thumbnail220Url | img_placeholder_tag}}" />
                 </div>
 
                 <div class="video-title one-line">
@@ -90,8 +89,6 @@
     {% endif %}
 </div>
 {% endfor %}
-
-<button type="button" class="video-subscription" style="display:none" data-video="" id="video-subscription"></button>
 
 <div class="modal fade" id="video-details" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -237,33 +234,21 @@
     eventer(messageEvent, function (e) {
         if (typeof e.data === 'string' || e.data instanceof String) {
 
-            var data = e.data;
-            // handle message from iframe to show cart
-            if(data.includes("videorent") || data.includes("videosubscription")){
-                if(data.includes("videorent")){
-                    var videoId = data.split(':')[1];
-                    $("#video-rental-" + videoId).click();
-                }
-                else{
-                    $("#video-subscription").click();
-                }
-            }
-            else{
-                // handle message from iframe update playback
-                try{
-                    var playback = JSON.parse(e.data);
-                    var playlistItems = watchStatus.playlist.playlistItems
-                    for (var i = 0, len = playlistItems.length; i < len; i++) {
-                        if(playlistItems[i].type == "Video" && playlistItems[i].video.id == playback.videoOnDemandId) {
-                            playlistItems[i].video.playback = playback;
-                        }
+            var data = e.data;           
+            // handle message from iframe update playback
+            try{
+                var playback = JSON.parse(e.data);
+                var playlistItems = watchStatus.playlist.playlistItems
+                for (var i = 0, len = playlistItems.length; i < len; i++) {
+                    if(playlistItems[i].type == "Video" && playlistItems[i].video.id == playback.videoOnDemandId) {
+                        playlistItems[i].video.playback = playback;
                     }
-
-                    watchStatus.refresh();
                 }
-                catch(e){
 
-                }
+                watchStatus.refresh();
+            }
+            catch(e){
+
             }
         }
     }, false);
