@@ -1,0 +1,114 @@
+﻿{% extends base %}
+{% block title %}{{ program.title | escape }} - {{ store.name }}{% endblock %}
+{% block head %}
+{{ templatePage | meta_tags }}
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <!-- Image and main body -->
+    <div class="col-md-12 margin-top-20">
+        <div class="section">
+            <h2 class="title">{{ program.title | escape }}</h2>
+
+            {% if program.image360Url != null %}
+            <div class="image-warpper">{{ program.image360Url | img_tag: program.title}}</div>
+            {% endif %}
+
+            <div id="no-session-available" {% if program.upcoming.size > 0 %}style="display:none;"{% endif %}>
+                <h2 class="title">No Session Available</h2>                
+            </div>
+
+            <div id="form-wrapper" {% if program.upcoming.size ==0 %}style="display:none;" {% endif %}>
+                <h3 class="title">{{program.titleText}}</h3>
+
+                <div class="row">
+                    <div class="col-sm-offset-3 col-sm-6">
+                        {% if program.pricingAvailable and program.price > 0 %}
+                        <a title="Click to register" class="btn btn-primary btn-lg purchase-program register-button" href="">{{program.buttonText}} - {{ program.price | money }}</a>
+                        {% else %}
+                        <form id="register-me">
+                            <div class="form-group">
+                                <input type="text" name="FullName" class="form-control" placeholder="Full Name" required {% if session.isLoggedIn %}value="{{session.firstName}} {{session.lastName}}" {% endif %}>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" name="Email" class="form-control" placeholder="Email" required {% if session.isLoggedIn %}value="{{session.email}}" {% endif %}>
+                            </div>
+
+                            <button type="submit" title="Click to register" class="btn btn-primary btn-lg register-button">{{program.buttonText}}</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if program.playbackMode != 'OnDemand' %}
+                <div>
+                    {% for session in program.upcoming limit:1 %}
+                    <div class="upcoming">
+                        <h3 class="start-time" id="start-time">{{ session.startTimeUtc | local_time:'dddd, MMMM Do [at] h:mm A' }}</h3>
+
+                        {% if program.upcoming.size > 1 %}
+                        <p>
+                            <div class="another-time register-program" data-program="{{program.id}}">Choose Another TIme</div>
+                        </p>
+                        {% endif %}
+
+                        <p class="timezone">Times are displayed in your local timezone</p>
+
+                        <div class="countdown" id="counter">
+                            <div class="time-wrapper"><div class="start-time"><div class="days">0</div><div>DAYS</div></div></div>
+                            <div class="time-wrapper"><div class="start-time"><div class="hours">0</div><div>HOURS</div></div></div>
+                            <div class="time-wrapper"><div class="start-time"><div class="minutes">0</div><div>MINS</div></div></div>
+                            <div class="time-wrapper"><div class="start-time"><div class="seconds">0</div><div>SECS</div></div></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if program.playbackMode == 'OnDemand' %}
+                <div id="viewing-time" class="upcoming" style="display:none; margin-bottom: 15px;">
+                    <h4>Upcoming Sessions</h4>
+
+                    {% for session in program.upcoming %}
+                    <p>{{ session.startTimeUtc | local_time:'dddd, MMMM Do [at] h:mm A' }} - {{ session.endTimeUtc | local_time_format:'h:mm A' }}</p>
+                    {% endfor %}
+
+                    <p class="timezone">Times are displayed in your local timezone</p>
+                </div>
+
+                <div id="on-demand-now" style="display:none; margin-bottom: 15px;">
+                    <h4>On-demand now</h4>
+                </div>
+                {% endif %}
+
+                {% if program.descriptionHtml %}
+                <div class="description">
+                    {{ program.descriptionHtml }}
+                </div>
+                {% endif %}
+            </div>            
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-success">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <h2>Thank you for your registration!</h2>
+
+                <div class="message"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ '/Content/shared/plugins/plugins-bundle.min.js' | script_tag }}
+{{ 'plugins/countdownjs/countdown.js' | asset_url | script_tag }}
+{{ 'plugins/moment-countdown/moment-countdown.js' | asset_url | script_tag }}
+{% include program-scripts%}    
+{% endblock %}

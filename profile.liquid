@@ -1,7 +1,7 @@
 ﻿{% extends base %}
 {% block title %}{{ teamMember.displayName }} - {{ store.name }}{% endblock %}
 {% block head %}
-{{ 'plugins/magnific-popup/magnific-popup.min.css' | asset_url | stylesheet_tag }}
+{{ '/Content/shared/plugins/magnific-popup/magnific-popup.min.css' | stylesheet_tag }}
 {% endblock %}
 {% block content %}
 
@@ -77,6 +77,6 @@
 {% endblock %}
 
 {% block scripts %}
-{{ 'plugins/magnific-popup/jquery.magnific-popup.min.js' | asset_url | script_tag }}
-{{ 'scripts/portfolio.js' | asset_url | script_tag }}
+{{ '/Content/shared/plugins/magnific-popup/jquery.magnific-popup.min.js' | script_tag }}
+{{ '/Content/shared/portfolio/portfolio.js' | script_tag }}
 {% endblock %}

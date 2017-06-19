@@ -19,7 +19,7 @@
             <p><strong>With:</strong> {{ booking.listing.teamMember.displayname }}</p>
             <p>
                 <a class="btn btn-primary" role="button" href="/session/{{booking.id}}/calendar?code={{booking.securecode}}&download=true&accessby={{booking.accessBy}}"><i class="fa fa-download"></i> Download</a>
-                <a class="btn btn-success" role="button" href="{{booking.googleCalendarUrl}}" target="_blank"><i class="fa fa-calendar-plus-o"></i> Add to Google Calendar</a>
+                <a class="btn btn-success" role="button" href="{{booking.googleCalendarUrl | escape}}" target="_blank"><i class="fa fa-calendar-plus-o"></i> Add to Google Calendar</a>
             </p>
         </form>
     </div>

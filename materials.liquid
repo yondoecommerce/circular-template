@@ -25,7 +25,7 @@
                     <li class="list-group-item">
                         <div class="row">
                             <div class="col-md-3">{{ material.name | escape }}</div>
-                            <div class="col-md-7">{{ material.description }}</div>
+                            <div class="col-md-7">{{ material.description | escape }}</div>
                             <div class="col-md-2 pull-right"><a class="btn btn-primary" role="button" href="{{ material.downloadUrl }}" download="{{ material.fileName }}"><i class="fa fa-download"></i> Download</a></div>
                         </div>
                     </li>

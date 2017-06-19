@@ -33,13 +33,13 @@
                             {% for video in popularVideos %}
                             <div class="popular-video">
                                 <div class="popular-video-image">
-                                    <a href="{{video.url}}" title="{{video.title}}">
+                                    <a href="{{video.url}}" title="{{video.title | escape}}">
                                         <img src="{{video.thumbnail220Url}}" />
                                     </a>
                                 </div>
                                 
                                 <div class="">
-                                    <a href="{{video.url}}" title="{{video.title}}">
+                                    <a href="{{video.url}}" title="{{video.title | escape}}">
                                         <div class="popular-video-title one-line"><strong>{{video.title | escape}}</strong></div>
                                     </a>
                                     <div class="popular-video-description">{{video.descriptionHtml}}</div>
@@ -63,7 +63,7 @@
                         <div class="video-list">
                             {% for video in videos %}
                             <div class="video-list-item">
-                                <a href="{{video.url}}" title="{{video.title}}">
+                                <a href="{{video.url}}" title="{{video.title | escape}}">
                                     <div class="title"><strong>{{video.title | escape}}</strong></div>
                                     <img src="{{video.thumbnail220Url}}" />
                                 </a>

@@ -1,0 +1,41 @@
+﻿<div class="long-card">
+    <div class='card-info'>
+        <div class="title one-line"><a href='{{ program.url }}'>{{ program.title | escape }}</a></div>
+        <div class="description">{{program.descriptionHtml}}</div>
+        <div class="card-image">
+            <div class="card-image-wrapper">
+                <a href="{{program.url}}">
+                    <img class="image" src='{{ program.image220Url }}' />
+                </a>
+            </div>
+        </div>
+        
+        <div class="webinar-time">
+            {% for time in program.upcoming %}
+            {% if forloop.first %}
+            {{ time.startTimeUtc | local_time_format:'ddd, MMM DD'  }}
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="details">
+            {% if program.PricingAvailable %}
+            <div>{{program.price | money}}</div>
+            {% endif %}
+            <div>
+                {% for time in program.upcoming %}
+                {% if forloop.first %}
+                {{ time.startTimeUtc | local_time_format:'h:mm a'  }}
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="register">
+            <a class='btn btn-default btn-primary btn-lg' href="{{program.url}}">{{program.buttonText}}</a>
+        </div>
+
+        <div class="additional-info">
+            <a href="{{program.url}}">Additional {% if program.upcoming.size < 2 %}info{% else %}times{% endif %} <i class="fa fa-angle-double-right"></i></a>
+        </div>
+    </div>
+</div>

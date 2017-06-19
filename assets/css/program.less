@@ -1,0 +1,84 @@
+﻿
+/* Webinar topic */
+.program {
+    .section{
+        text-align: center;
+
+        .title{
+            color: @title-text-color;
+        }
+
+        .register-button{
+            max-width:100%;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .upcoming {
+
+            .another-time{
+                color: @link-color;
+                cursor: pointer;
+            }
+
+            .start-time{
+                color:@title-text-color;
+            }
+
+            .timezone{
+                font-size: 12px;
+                font-weight: @font-light;
+                color:@description-text-color;
+            }
+
+            .countdown{
+                clear:both;
+                display:inline-block;
+                
+                .time-wrapper{
+                    display: inline-block;
+                    float: left;
+                    width: 70px;
+                    height: 70px;
+                    border: 2px solid @webinar-counter-color;
+                    border-radius: 50%;
+                    margin: 0 5px;
+
+                    .start-time{
+                        color: @webinar-counter-color;
+                        margin-top: 8px;
+                        div:first-child{
+                            border-radius: 3px;
+                            font-size: 21px;
+                            font-weight: @font-light;
+                            position: relative;
+                            text-align: center;
+                        }
+
+                        div:last-child{
+                            font-size: 11px;
+                            font-weight: @font-light;
+                        }
+                    }
+                }
+            }
+            
+            .purchase-webinar{
+                padding: 10px 60px;
+            }
+        }
+        
+        .image-warpper{
+            text-align:center;
+        }
+        
+        .description{
+            ul{
+                list-style-position: inside;
+            }   
+        }
+
+    }
+}

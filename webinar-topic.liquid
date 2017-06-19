@@ -65,8 +65,9 @@
 {% endblock %}
 
 {% block scripts %}
-{{ 'plugins/plugins-bundle.min.js' | asset_url | script_tag }}
-
+{{ '/Content/shared/plugins/plugins-bundle.min.js' | script_tag }}
+{{ 'plugins/countdownjs/countdown.js' | asset_url | script_tag }}
+{{ 'plugins/moment-countdown/moment-countdown.js' | asset_url | script_tag }}
 <script>
 $(function () {
     var webinarTopic = {{ webinarTopic | json:'webinarTopic' }};

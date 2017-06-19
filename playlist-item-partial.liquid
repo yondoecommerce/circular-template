@@ -2,7 +2,7 @@
 <div class="playlist-item">
     {% if item.Type == 'Section' %}
     <div class="section section-title">
-        {{item.sectionTitle}}
+        {{item.sectionTitle | escape}}
     </div>
     {% elseif item.Type == 'Video' %}    
         {% if playlist.availableToWatch == true %}
@@ -10,6 +10,12 @@
             <div class="video-details">
                 {% if item.isPreview == true %}
                 <span class="label label-success">Preview</span>
+                {% endif %}
+
+
+
+                {% if item.video.fileAttachments.size > 0 %}
+                <span class=""><i class="fa fa-file-o fa-lg" title="File Attachment"></i></span>
                 {% endif %}
                 <span class="duration">{{ item.video.duration | duration_to_string}}</span>
             </div>
@@ -19,19 +25,43 @@
             </div>
 
             <div class="video-thumb">
-                <img src="{{item.video.thumbnail220Url | img_placeholder_tag}}" />
+                <img src="{{item.video.thumbnail220Url | img_placeholder_tag}}"/>
             </div>
 
             <div class="video-title one-line">
-                {{item.video.title}}
+                {{item.video.title | escape}}
             </div>
         </a>
+
+                {% if item.video.fileAttachments.size > 0 %}
+                <div class="file-attachments">
+                    <ul style="padding-left: 60px;">
+                        {% for attachment in item.video.fileAttachments %}
+                        <li class="attachment" style="list-style: none;">
+                            <div class="attachment-title">
+                                <i class="fa {{attachment.icon}} fa-lg" title="{{ attachment.filename | escape }}"></i> {{ attachment.title | escape }} 
+                                {% if attachment.downloadUrl != null %}
+                                <a href="{{ attachment.downloadUrl }}" class="btn btn-default btn-sm" target="_blank" download="{{ attachment.filename | escape }}"><i class="fa fa-download"></i> Download</a>
+                                {% endif %}
+                            </div>
+                            <p class="attachment-description">{{ attachment.description | escape }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
         {% else %}
             {% if item.video.assets != null and video.published or item.isPreview %}
-            <a class="video" onclick="return videoModal.showModal({{item.video.id}});" id="playlist-video-{{item.video.id}}">
+            <a class="video" onclick="return videoModal.showModal({{ item.video.id }});" id="playlist-video-{{item.video.id}}">
                 <div class="video-details">
                     {% if item.isPreview == true %}
                     <span class="label label-success">Preview</span>
+                    {% endif %}
+
+
+                    {% if item.video.fileAttachments.size > 0 %}
+                    <span class=""><i class="fa fa-file-o fa-lg" title="File Attachment"></i></span>
                     {% endif %}
                     <span class="duration">{{ item.video.duration | duration_to_string}}</span>
                 </div>
@@ -41,19 +71,43 @@
                 </div>
 
                 <div class="video-thumb">
-                    <img src="{{item.video.thumbnail220Url | img_placeholder_tag}}" />
+                    <img src="{{item.video.thumbnail220Url | img_placeholder_tag}}"/>
                 </div>
 
                 <div class="video-title one-line">
-                    {{item.video.title}}
+                    {{item.video.title | escape}}
                 </div>
             </a>
+
+                {% if item.video.fileAttachments.size > 0 %}
+                <div class="file-attachments">
+                    <ul style="padding-left: 60px;">
+                        {% for attachment in item.video.fileAttachments %}
+                        <li class="attachment" style="list-style: none;">
+                            <div class="attachment-title">
+                                <i class="fa {{attachment.icon}} fa-lg" title="{{ attachment.filename | escape }}"></i> {{ attachment.title | escape }} 
+                                {% if attachment.downloadUrl != null %}
+                                <a href="{{ attachment.downloadUrl }}" class="btn btn-default btn-sm" target="_blank" download="{{ attachment.filename | escape }}"><i class="fa fa-download"></i> Download</a>
+                                {% endif %}
+                            </div>
+                            <p class="attachment-description">{{ attachment.description | escape }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
             {% else %}    
             <a class="video" data-toggle="collapse" href="#playlist-video-{{item.video.id}}-details" id="playlist-video-{{item.video.id}}">
                 <div class="video-details">
                     {% if item.isPreview == true %}
                     <span class="label label-success">Preview</span>
                     {% endif %}
+                    
+                    
+                    {% if item.video.fileAttachments.size > 0 %}
+                    <span class=""><i class="fa fa-file-o fa-lg " title="File Attachment"></i></span>
+                    {% endif %}
                     <span class="duration">{{ item.video.duration | duration_to_string}}</span>
                 </div>
 
@@ -66,17 +120,35 @@
                 </div>
 
                 <div class="video-title one-line">
-                    {{item.video.title}}
+                    {{item.video.title | escape}}
                 </div>
             </a>
 
             <div class="collapse" id="playlist-video-{{item.video.id}}-details">
-                <div class="description"  style="margin-left:60px;">
+                <div class="description" style="margin-left: 60px;">
                     {% if video.descriptionHtml != empty %}
                     {{item.video.descriptionHtml}}
                     {% endif %}
                 </div>
-            
+
+                {% if item.video.fileAttachments.size > 0 %}
+                <div class="file-attachments">
+                    <ul style="padding-left: 60px;">
+                        {% for attachment in item.video.fileAttachments %}
+                        <li class="attachment" style="list-style: none;">
+                            <div class="attachment-title">
+                                <i class="fa {{attachment.icon}} fa-lg" title="{{ attachment.filename | escape }}"></i> {{ attachment.title | escape }} 
+                                {% if attachment.downloadUrl != null %}
+                                <a href="{{ attachment.downloadUrl }}" class="btn btn-default btn-sm" target="_blank" download="{{ attachment.filename | escape }}"><i class="fa fa-download"></i> Download</a>
+                                {% endif %}
+                            </div>
+                            <p class="attachment-description">{{ attachment.description | escape }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
                 {% if item.video.published == true %}
                 <div class="text-center" style="margin-top: 10px;">
                     <a class="btn btn-primary btn-sm" href="{{item.video.url}}">View Details</a>

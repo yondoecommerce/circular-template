@@ -15,6 +15,7 @@
     {{ '/Content/shared/base/base-bundle.js' | script_tag }}
     {% block head %}
     {% endblock %}
+    {{ store.customTrackingScript }}
 </head>
     <body class="{{ templatePage }}">
         <div>
@@ -153,6 +154,10 @@
             }
 
         </script>
+
+        <!-- Google Analytics -->
+        {{ store.googleAnalyticsTrackingId | google_analytics_page_view_script_tag }}
+
         {% block scripts %}
         {% endblock %}
     </body>

@@ -1,7 +1,6 @@
 ﻿{% extends base %}
 {% block title %}{{ video.title }} - {{ store.name }}{% endblock %}
 {% block head %}
-{{ 'plugins/plugins-bundle.min.css' | asset_url | stylesheet_tag }}
 {{ templatePage | meta_tags }}
 {% endblock %}
 {% block content %}
@@ -53,7 +52,7 @@
                             {% if video.subscriptionAvailable and video.subscribed == false %}
                             <p><span class="title">Subscription Price:</span> <br /> {{ video.subscriptionPrice | money }} {% if video.subscriptionPrice > 0 %}/ month {% endif %}</p>
 
-                            <p><button class="btn btn-primary btn-lg btn-block video-subscription" data-video="{{ video.id }}">Subscription</button></p>
+                            <p><button class="btn btn-primary btn-lg btn-block video-subscription" data-video="{{ video.id }}">Subscribe</button></p>
                             {% endif %}
                         </div>
                     </div>

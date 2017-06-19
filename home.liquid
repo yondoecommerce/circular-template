@@ -2,7 +2,6 @@
 {% block title %}{{ store.name }}{% endblock %}
 {% block head %}
     {{ '/Content/shared/plugins/magnific-popup/magnific-popup.min.css' | stylesheet_tag }}
-    {{ '/Content/shared/plugins/plugins-bundle.min.css' | stylesheet_tag }}
     {{ templatePage | meta_tags }}
 {% endblock %}
 {% block content %}
@@ -95,6 +94,14 @@
             <div class="text-center">
                 {% for playlist in playlists %}
                 {% include playlist-card %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if section.id == "program" %}
+            <div class="text-center">
+                {% for program in programs %}
+                {% include program-card %}
                 {% endfor %}
             </div>
             {% endif %}

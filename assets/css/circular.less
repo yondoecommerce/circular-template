@@ -61,7 +61,12 @@ h3{
     }
     
     .nav > li > a { 
+        max-width: 120px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         background-color: @navbar-default-bg;
+
         &:hover,
         &:focus {
         background-color: @navbar-default-bg;
@@ -1601,3 +1606,4 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
 
 
 @import "playlist.less";
+@import "program.less";

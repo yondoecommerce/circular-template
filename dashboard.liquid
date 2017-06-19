@@ -68,6 +68,20 @@
                     </div>
                 </li>
                 {% endif %}
+
+                <!-- programs -->
+                {% if booking.program != null %}
+                <li class="list-group-item">
+                    {% if booking.program.image220Url != null %}
+                    {{ booking.program.image220Url | img_tag:booking.program.title, 'listing-thumb pull-left' }}
+                    {% endif %}
+                    <div>{{ store.programSettings.noun }}: {{ booking.startTimeUTC | local_time }} </div>
+                    <div><a href="{{ booking.program.url }}">{{ booking.program.title | escape }}</a></div>
+                    <div class="button-group">
+                        <a class="btn btn-default btn-xs" href="{{ booking.sessionUrl }}"><i class="fa fa-comment-o"></i> Join Session</a>
+                    </div>
+                </li>
+                {% endif %}
                 {% endfor %}
 
                 {% if upcomingBookings == empty %}
@@ -79,14 +93,14 @@
                 {% for package in packages %}
                 <li class="list-group-item">
                     <div class="panel panel-default">
-                        <div class="panel-heading">Package: {{ package.packageName }} purchased {{ package.purchaseDate | local_time }}</div>
+                        <div class="panel-heading">Package: {{ package.packageName | escape }} purchased {{ package.purchaseDate | local_time }}</div>
                         <ul class="package-items list-group">
                             {% for item in package.items %}
                             {% if item.isBooked == false %}
                             <li class="list-group-item">
                                 <button class="btn btn-success pull-right make-booking" data-listing="{{ item.listing.id }}" data-from-package="{{ package.id }}">Book Now</button>
                                 {{ item.listing.image220Url | img_tag:item.listing.title, 'listing-thumb pull-left' }}
-                                <div style="line-height: 40px"><a href="{{ item.listing.url }}">{{ item.listing.title }}</a></div>
+                                <div style="line-height: 40px"><a href="{{ item.listing.url }}">{{ item.listing.title | escape }}</a></div>
 
                             </li>
                             {% endif %}
@@ -118,11 +132,31 @@
             </ul>
         </div>
 
+        <!-- playlist rentals -->
+        <div class="panel panel-default">
+            <div class="panel-heading">{{store.playlistNounPlural}}</div>
+            <ul class="list-group">
+                {% for playlist in rentalPlaylists %}
+                <li class="list-group-item">
+                    {{ playlist.image220Url | img_tag:playlist.title, 'listing-thumb pull-left' }}
+                    <div>{% if playlist.rentalExpire == null %}Purchased{% else %}{{ playlist.rentalExpire | local_time }}{% endif %}</div>
+                    <div><a href="{{ playlist.url }}">{{ playlist.title | escape }}</a></div>
+                </li>
+                {% endfor %}
+
+                {% if rentalPlaylists == empty %}
+                <li class="list-group-item">
+                    None
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        
         <!-- subscriptions -->
         {% if subscription %}
         <div class="panel panel-default">
             <div class="panel-heading">
-                Video Subscription
+                Subscription
                 {% if subscription.cancellationUrl and subscription.payments.size > 0 %}
                 <a class="btn btn-default btn-xs pull-right" href="{{ subscription.cancellationUrl }}" target="_blank"><i class="fa fa-ban"></i> Cancel Subscription</a>
                 {% endif %}

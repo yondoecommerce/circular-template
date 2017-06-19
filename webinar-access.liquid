@@ -106,8 +106,8 @@
                             <div class="text-center">
                                 <img ng-src="{{webinar.topic.imageThumbSrc}}" />
                                 <div class="title">
-                                    <h1 class="one-line">{{webinar.topic.title}}</h1>
-                                    <h4 class="one-line">{{webinar.name}}</h4>
+                                    <h1 class="one-line">{{webinar.topic.title | escape}}</h1>
+                                    <h4 class="one-line">{{webinar.name | escape}}</h4>
                                 </div>
                             </div>
                         </div>
@@ -136,6 +136,7 @@
                                         </div>
                                         <button type="submit" class="btn btn-primary" ng-disabled="isConnectingUsingCustomerAccount">Join Webinar</button>
                                     </form>
+                                    <div class="alert alert-danger" ng-show="error" ng-bind="error"></div>
                                 </div>
 
                                 <div class="col-md-4 text-center margin-top-50">
@@ -157,6 +158,8 @@
                                         <div class="one-line"><span ng-bind="account.getDetails().email"></span></div>
                                     </div>
                                 </div>
+
+                                <div class="alert alert-danger" ng-show="error" ng-bind="error"></div>
 
                                 <div class="text-center">
                                     <button type="button" class="btn-link" ng-click="account.differentAccountUrl()">Different Account?</button>

@@ -1,0 +1,149 @@
+﻿<script>
+$(function () {
+    var program = {{ program | json:'program' }};
+
+    var startTime;
+    var endTime;
+
+    function updateCountdown(){
+        if($("#counter").length == 0)
+            return;
+
+        var counter = moment.utc().countdown(moment.utc(startTime),
+                countdown.DAYS |
+                countdown.HOURS |
+                countdown.MINUTES |
+                countdown.SECONDS
+            );
+
+        var days = 0, hours = 0, minutes = 0, seconds = 0;
+        if(moment.utc().isBefore(moment.utc(startTime)))
+        {
+            days = counter.days;
+            hours = counter.hours;
+            minutes = counter.minutes;
+            seconds = counter.seconds;
+        }
+        else{
+            $("#no-session-available").show();
+            $("#form-wrapper").hide();
+        }
+
+        $("#counter .days").text(days);
+        $("#counter .hours").text(hours);
+        $("#counter .minutes").text(minutes);
+        $("#counter .seconds").text(seconds);
+
+    };
+
+    function updateDateTime(){
+        if($("#start-time").length)
+            $("#start-time").text(moment.utc(startTime).local().calendar(null, {sameElse: 'dddd, MMMM Do [at] h:mm A'}));
+        
+        if($(".purchase-program").length)
+            $(".purchase-program").attr("href", '/cart/add/program/' + program.id + '?playbackstarttime=' + startTime);
+    };
+
+    function init(){
+        if(program.upcoming.length == 0 || !program.canRegister){
+            $("#no-session-available").show();
+            $("#form-wrapper").hide();
+        }
+        else{
+            $("#form-wrapper").show();
+            startTime = program.upcoming[0].startTimeUtc;
+
+            if(program.playbackMode != "OnDemand"){
+                updateCountdown();
+                setInterval(function(){
+                    updateCountdown();
+                }, 1000);
+            }
+            else{
+                endTime = program.upcoming[0].endTimeUtc;
+
+                if(moment.utc().isBefore(moment.utc(startTime)))
+                    $("#viewing-time").show();
+                else
+                    $("#on-demand-now").show();
+
+            }
+            
+            updateDateTime();
+        }
+    };
+
+    init();
+
+    $("#register-me").submit(function (event) {
+        event.preventDefault();
+
+        function toJSONObject( form ) {
+            var obj = {};
+            var elements = form.querySelectorAll( "input" );
+            for( var i = 0; i < elements.length; ++i ) {
+                var element = elements[i];
+                var name = element.name;
+                var value = element.value;
+
+                if( name ) {
+                    obj[ name ] = value;
+                }
+            }
+
+            return obj;
+        };
+
+        var data = toJSONObject(this);
+        data.TimeZone = jstz.determine().name();
+        data.startTime = startTime;
+
+        $.ajax({
+            type: "post",
+            url: "/program/" + program.key + "/registration",
+            data: data,
+            success: function (data, status, jqXHR) {
+                //reset regist form
+                $('#register-me')[0].reset();
+
+                var message;
+
+                //if a session will be started within a hour then redirect to the session
+                if(moment.utc().add(1, 'hour').isBefore(moment.utc(startTime))){
+                    message = "<p>You will receive a confirmation email.</p>";
+                }
+                else{
+                    var count = 5;
+                    message = "<p>You will be redirected to the session in " + count + " second" + (count > 1 ? 's' :'') + ".<p>";
+                    var countdown = setInterval(function(){
+                        count--;
+                        message = "<p>You will be redirected to the session in " + count + " second" + (count > 1 ? 's' :'') + ".<p>";
+                        $( "#modal-success .message" ).html(message);
+                        if (count == 0) {
+                            clearInterval(countdown);
+                            window.location.href = data.redirectUrl;
+                        }
+                    }, 1000);
+                }
+
+                $( "#modal-success .message" ).html(message);
+                $('#modal-success').modal('show');
+            },
+            error: function (jqXHR, status) {
+                alert("Fail to regist");
+            }
+        });
+    });
+
+    //get selected time from booking calendar
+    window.addEventListener("message", function (msg) {
+        if (typeof msg.data === 'string' && msg.data.indexOf("program-starttime") > -1) {
+            startTime = msg.data.split(';')[1];
+            updateCountdown();
+            updateDateTime();
+        }
+    }, false);
+});
+
+
+</script>
