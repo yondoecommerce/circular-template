@@ -28,9 +28,16 @@
             <div class="right-panel">
                 <div class="panel panel-default">
                     <div class="panel-body">
+                        <button class="btn btn-primary btn-lg btn-block video-subscription" >Subscribe Now</button>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
                         <div class="popular-videos">
                             <div class="panel-title">Popular Videos</div>
                             {% for video in popularVideos %}
+                            {% if forloop.index < 5 %}
                             <div class="popular-video">
                                 <div class="popular-video-image">
                                     <a href="{{video.url}}" title="{{video.title | escape}}">
@@ -45,6 +52,7 @@
                                     <div class="popular-video-description">{{video.descriptionHtml}}</div>
                                 </div>
                             </div>
+                            {% endif %}
                             {% endfor %}
                         </div>
                     </div>
