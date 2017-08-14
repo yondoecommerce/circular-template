@@ -12,6 +12,42 @@
                             {% include video-player %}
                             {% include video-player-scripts %}
 
+                            {% if video.subscribed == false and video.purchased == false %}
+                            <div class="row price-wrapper">
+                                {% if video.rented %}
+                                <div class="col-md-12">
+                                    <div class="price">
+                                        Rental expires {{ video.rentalExpire | from_x }}
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if video.rentalAvailable and video.rented == false %}
+                                <div class="col-md-6">
+                                    <div class="price">
+                                        {{ video.rentalPrice | money }} {% if video.rentalPrice > 0 %}/ {{ video.rentalPeriod | period }} {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <button class="btn btn-primary btn-block video-rental" data-video="{{ video.id }}">Rent</button>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            {% if video.subscribed == false and video.purchaseAvailable and video.purchased == false %}
+                            <div class="row price-wrapper">
+                                <div class="col-md-6">
+                                    <div class="price">{{ video.purchasePrice | money }}</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <button class="btn btn-primary btn-primary-dark btn-block video-purchase" data-video="{{ video.id }}">Purchase</button>
+                                </div>
+                            </div>
+                            {% endif %}
+
                             {% if video.descriptionHtml != empty %}
                             <div class="description">
                                 {{ video.descriptionHtml }}
@@ -26,18 +62,23 @@
 
         <div class="col-md-5">
             <div class="right-panel">
+                {% if session.subscriptionAvailable and session.subscribed == false %}
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <button class="btn btn-primary btn-lg btn-block video-subscription" >Subscribe Now</button>
+                        <button class="btn btn-primary btn-lg btn-block video-subscription">Subscribe Now</button>
                     </div>
                 </div>
+                    {% assign maxPopularVideos = 4 %}
+                {% else %}
+                    {% assign maxPopularVideos = 5 %}
+                {% endif %}
 
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="popular-videos">
                             <div class="panel-title">Popular Videos</div>
                             {% for video in popularVideos %}
-                            {% if forloop.index < 5 %}
+                            {% if forloop.index <= maxPopularVideos %}
                             <div class="popular-video">
                                 <div class="popular-video-image">
                                     <a href="{{video.url}}" title="{{video.title | escape}}">
