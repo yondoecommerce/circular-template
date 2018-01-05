@@ -1,4 +1,10 @@
 ﻿<div class="video-purchase">
+    <div class="section refresh" style="display:none;">
+      <h5>
+        <a href="" onclick="refresh()">Recently made a purchase? Click here to refresh.</a>
+      </h5>
+    </div>
+  
     {% if video.subscriptionAvailable %}
     <div class="section title">
         You must have a current subscription to watch this video.
@@ -17,10 +23,11 @@
         </div>
       </div>
     </div>
-
+    {% if store.subscriptionHelpText %}
     <div class="section hidden-xs">
-      {{store.subscriptionHelpText}}
-    </div>
+        {{store.subscriptionHelpText}}
+    </div>    
+    {% endif %}
     {% endif %}
 
     {% if video.rentalAvailable %}
@@ -43,6 +50,27 @@
 
     {% endif %}
 
+    {% if video.purchaseAvailable %}
+    <div class="section title">
+      You can purchase this video for
+      {% if video.purchasePrice > 0 %}
+      {{ video.purchasePrice | money }}.
+      {% else %}
+      <strong>free.</strong>
+      {% endif %}
+    </div>
+
+    <div class="section">
+      <div class="row">
+        <div class="col-sm-6 col-sm-offset-3 text-center">
+          <button class="btn btn-primary btn-lg btn-block video-purchase" data-video="{{ video.id }}">Purchase</button>
+        </div>
+      </div>
+    </div>
+
+    {% endif %}
+
+
     {% if ShowVideoUrl %}
     <div class="section">
         <h5><a href="{{store.subdomainUrl}}{{video.url}}" target="_blank">Go to Video</a></h5>
@@ -54,4 +82,8 @@
         <h5><a href="{{video.helpLink}}" target="_blank">How does it work?</a></h5>
     </div>
     {% endif %}
+        
+    <div class="section already-purchased" style="display:none;">
+        <h5><a href="" target="_top">Already purchased?</a></h5>
+    </div>
 </div>

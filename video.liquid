@@ -33,28 +33,58 @@
                     <h2 class="panel-title">{{ video.title | escape }}</h2>
                 </div>
                 <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            {% if video.subscriptionAvailable == false or video.subscriptionAvailable == true and video.subscribed == false%}
+                    <div class="price-section">
+                        {% if video.subscribed == false and video.purchased == false %}
+                        <div class="row price-wrapper">
                             {% if video.rented %}
-                            <p>Rental expires {{ video.rentalExpire | from_x }}</p>
+                            <div class="col-md-12">
+                                <div class="price">
+                                    Rental expires {{ video.rentalExpire | from_x }}
+                                </div>
+                            </div>
                             {% endif %}
 
                             {% if video.rentalAvailable and video.rented == false %}
-                            <p><span class="title">Rental Price:</span> <br /> {{ video.rentalPrice | money }} {% if video.rentalPrice > 0 %}/ {{ video.rentalPeriod | period }} {% endif %}</p>
-                            
-                            <p><button class="btn btn-primary btn-lg btn-block video-rental" data-video="{{ video.id }}">Rent</button></p>
-                            {% endif %}
+                            <div class="col-md-6">
+                                <div class="price">
+                                    {{ video.rentalPrice | money }} {% if video.rentalPrice > 0 %}/ {{ video.rentalPeriod | period }} {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <button class="btn btn-primary btn-lg btn-block video-rental" data-video="{{ video.id }}">Rent</button>
+                            </div>
                             {% endif %}
                         </div>
+                        {% endif %}
 
-                        <div class="col-md-6">
-                            {% if video.subscriptionAvailable and video.subscribed == false %}
-                            <p><span class="title">Subscription Price:</span> <br /> {{ video.subscriptionPrice | money }} {% if video.subscriptionPrice > 0 %}/ month {% endif %}</p>
+                        {% if video.subscribed == false and video.purchaseAvailable and video.purchased == false %}
+                        <div class="row price-wrapper">
+                            <div class="col-md-6">
+                                <div class="price">{{ video.purchasePrice | money }}</div>
+                            </div>
 
-                            <p><button class="btn btn-primary btn-lg btn-block video-subscription" data-video="{{ video.id }}">Subscribe</button></p>
-                            {% endif %}
+                            <div class="col-md-6">
+                                <button class="btn btn-primary btn-primary-dark btn-lg btn-block video-purchase" data-video="{{ video.id }}">Purchase</button>
+                            </div>
                         </div>
+                        {% endif %}
+
+                        {% if video.subscriptionAvailable and video.subscribed == false %}
+                        <div class="row price-wrapper">
+                            <div class="col-md-6">
+                                <div class="price">{{ video.subscriptionPrice | money }} {% if video.subscriptionPrice > 0 %}/ month {% endif %}</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <button class="btn btn-primary btn-lg btn-block  video-subscription" data-video="{{ video.id }}">Subscribe</button>
+                            </div>
+                        </div>
+
+                        {% if store.subscriptionHelpText != null and store.subscriptionHelpText != "" %}
+                        <p>{{store.subscriptionHelpText}}</p>
+                        {% endif %}
+                        {% endif %}
                     </div>
 
                     <div class="">

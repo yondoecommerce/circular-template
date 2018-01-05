@@ -21,13 +21,17 @@
                     <div><a href="{{ booking.listing.url }}">{{ booking.listing.title | escape }}</a></div>
 
                     {% if booking.connectionType == "DialIn" %}
-                    <div class="call-info">
+                    <div class="button-group">
                         Dial in Number: {{booking.dialInNumber}} <br />
                         Access Code : {{booking.accessCode}} / Secure Pin: {{booking.securePin}}
                     </div>
                     {% elsif booking.connectionType == "DirectContact" %}
-                    <div class="call-info">
+                    <div class="button-group">
                         Your contact number: {{booking.contactNumber}}
+                    </div>
+                    {% elsif booking.connectionType == "InOffice" %}
+                    <div class="button-group">
+                        Address: {{booking.officeAddress}}
                     </div>
                     {% endif %}
 
@@ -157,20 +161,28 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 Subscription
-                {% if subscription.cancellationUrl and subscription.payments.size > 0 %}
-                <a class="btn btn-default btn-xs pull-right" href="{{ subscription.cancellationUrl }}" target="_blank"><i class="fa fa-ban"></i> Cancel Subscription</a>
-                {% endif %}
+                {% if subscription.status != 'scheduledtobecanceled' %}
+                    {% if subscription.cancellationUrl and subscription.payments.size > 0 %}
+                    <a class="btn btn-default btn-xs pull-right" href="{{ subscription.cancellationUrl }}" target="_blank"><i class="fa fa-ban"></i> Cancel Subscription</a>
+                    {% endif %}
 
-                {% if subscription.cancellationPost %}
-                <button type="button" class="btn btn-default btn-xs pull-right" onclick="confirmCancel('{{ subscription.cancellationPost }}');">
-                    <i class="fa fa-ban"></i> Cancel Subscription
-                </button>
+                    {% if subscription.cancellationPost %}
+                    <button type="button" class="btn btn-default btn-xs pull-right" onclick="confirmCancel('{{ subscription.cancellationPost }}');">
+                        <i class="fa fa-ban"></i> Cancel Subscription
+                    </button>
+                    {% endif %}
+
+                    {% if subscription.changeCardIframe %}
+                    <button type="button" class="btn btn-default btn-xs pull-right" data-toggle="modal" data-target="#changeCardModal">
+                        <i class="fa fa-credit-card"></i> Change Card
+                    </button>
+                    {% endif %}
                 {% endif %}
             </div>
             <ul class="list-group">
                 <li class="list-group-item">
                     <div>
-                        Status: {{ subscription.status }}
+                        Status: {{ subscription.statusText }}
                     </div>
                     <div>
                         Start date: {{ subscription.startDate | local_time }}
@@ -247,6 +259,21 @@
 </div>
 
 
+<!-- Change Card Modal -->
+<div class="modal fade" id="changeCardModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Change Card</h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="changeCardIframe"  style="width: 100%; border: none; height: 550px;"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -260,5 +287,13 @@
             });
         }
     }
+
+    function closeChangeCardModal() {
+        $('#changeCardModal').modal('hide');
+    }
+
+    $('#changeCardModal').on('shown.bs.modal', function (e) {
+        $('#changeCardIframe').attr('src', "{{ subscription.changeCardIframe }}");
+    });
 </script>
 {% endblock %}

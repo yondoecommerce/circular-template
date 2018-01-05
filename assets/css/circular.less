@@ -193,7 +193,7 @@ img.profile {
         margin: 0 auto;
         padding-top: 50px;
         display: table;
-        font-size: 20px;
+        font-size: 18px;
         line-height: 1.7em;
         text-align: center;
 
@@ -788,25 +788,29 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
 }
 
 // portfolio template
-.video-preview, .image-preview, .document-preview
+.video-preview, 
+.image-preview, 
+.document-preview
 {
     float:left;
-    width: 180px;   
+    width: 130px;   
     text-align: center;
-    height: 175px;
+    height: 125px;
     margin: 20px 10px;
-}
 
-.image-preview img {
-    max-width: 100%;
-    max-height: 100%;
-    border: white solid 3px;
-    -webkit-box-shadow: 2px 2px 8px 0px #888;
-    box-shadow: 2px 2px 8px 0px #888;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-}
+    .image-container{
+        margin-bottom: 10px;
+    }
 
+    img {
+        max-height: 95px;
+        border: white solid 3px;
+        -webkit-box-shadow: 2px 2px 8px 0px #888;
+        box-shadow: 2px 2px 8px 0px #888;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+    }
+}
             
 .img-thumbnail-video {
     width: 100%;
@@ -816,17 +820,6 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
     max-width: 100%;
     display:block;
     margin: 0 auto;
-}
-
-.video-preview img, .document-preview img {
-    max-width: 180px;
-    max-height: 140px;
-    margin-bottom: 5px;
-    border: white solid 3px;
-    -webkit-box-shadow: 2px 2px 8px 0px #888;
-    box-shadow: 2px 2px 8px 0px #888;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
 }
 
 .video-preview .image-container {
@@ -884,7 +877,6 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
         }
 
         .description{
-            font-size: 12px;
             font-weight: @font-light;
         }
     }
@@ -930,7 +922,6 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
         display: inline-block;
         width: 100%;
         .panel-body {
-            font-size: 13px;
             font-weight: @font-light;
         }
     }
@@ -946,13 +937,17 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
         }
 
         .panel-body {
-            font-size: 13px;
         }
     }
 }
 
 /* Video Page */
 .video {    
+    .btn-primary-dark{
+        background-color: @brand-primary-dark;
+        border-color: darken(@brand-primary-dark, 5%);
+    }
+
     .panel{
         .panel-heading{
             border: none;
@@ -964,7 +959,6 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
         
         .description{
             margin-top: 20px;
-            font-size: 12px;
             font-weight: @font-light;
             color: @description-text-color;
         }        
@@ -976,6 +970,21 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
         .panel{
             .panel-title{
                 font-size: 32px;
+            }
+        }
+
+        .price-section{
+            font-size: 18px;
+            text-align: center;
+
+            .price-wrapper{
+                margin-bottom: 10px;
+                .price{
+                    line-height:41px;
+                    height:41px;
+                    text-align: left;
+                    margin-bottom: 5px;
+                }
             }
         }
         
@@ -1018,6 +1027,7 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
     }  
 }
 
+
 /* Profile Page */
 .profile {
     .panel{
@@ -1025,32 +1035,30 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
             border: none;
         }
     }
-    .top-section {      
-        p {
-            margin: 10px 0;
-            font-size: 12px;
-            
-            .title{
-                color: @title-text-color;
-                font-weight: @font-semibold;
-            }
-            
-            color: @description-text-color;
-        }
-          
-        .image-wrapper{
-            position: relative;
-            
-            .banner-image{
-                min-height: 170px;
-                img{
-                    width: 100%;
+    .top-section {     
+        .profile-image-wrapper{        
+            &.banner-image-wrapper {
+                .banner-image{
+                    img{
+                        width: 100%;
+                    }
+                }
+            }    
+
+            &:not(.banner-image-wrapper) {
+                display: inline-block;
+                float: left;
+                margin-right: 10px;
+
+                .profile-image{                
+                    display:inline-block;
+                    img{
+                    }
                 }
             }
 
-            .team-member-image{                
+            .profile-image{                
                 img{
-                    width: 150px;
                     -webkit-box-shadow:  0 2px 5px 0 rgba(0, 0, 0, 0.1);
                     -moz-box-shadow:  0 2px 5px 0 rgba(0, 0, 0, 0.1);
                     box-shadow:  0 2px 5px 0 rgba(0, 0, 0, 0.1);
@@ -1058,42 +1066,32 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
                     overflow:hidden;
                     padding: 5px;
                     background-color: #fff;
-                    margin-top: -190px;
-                    margin-left: 10px;
                 }
             }
         }
 
-        .profile-details{
+         p {
+            margin: 10px 0;
+            font-size: 12px;
             
-            .displayname {
-                font-size: 32px;
+            .title{
+                color: @title-text-color;
                 font-weight: @font-semibold;
-                max-height: 104px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            
-            .portfolios {
-                display: inline-block;
-            }
-        
-            .details {
-                .indent {
-                    margin: 10px 0;
+            }            
+        }
 
-                    .name {
-                        display: inline-block;
-                        float: left;
-                    }
-
-                    .tags {
-                        margin-left: 80px;
-                    }
-                }
+         .qualification{
+            p br {
+              content: '';
+              width: 9px;
+              height: 18px;
             }
 
-        }        
+            p br:before {
+              content: ', '
+            }
+         }
+           
     }
 
     .portfolios {
@@ -1107,9 +1105,113 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
     }
 }
 
+
+@media (min-width: @screen-sm) {
+    .profile {
+        .top-section {      
+            .profile-image-wrapper{    
+                &.banner-image-wrapper{
+                    .banner-image{
+                        min-height: 170px;
+                    }
+
+                    .profile-image{                
+                        img{
+                            height: 150px;
+                            margin-top: -140px;
+                            margin-left: 30px;
+                        }
+                    }
+                }        
+
+                &:not(.banner-image-wrapper) {
+                    display: inline-block;
+                    float: left;
+                    margin-right: 15px;
+
+                    .profile-image{                
+                        display:inline-block;
+                        img{
+                            height: 250px;
+                        }
+                    }
+                }
+            }
+
+            
+            .name {
+                font-size: 32px;
+            }    
+
+            .details{
+                &:not(.banner-image-wrapper) {
+                    margin-left: 265px;
+                } 
+            }
+        }
+    }
+}
+
+@media (max-width: @screen-sm) {
+    .profile {
+        .top-section {      
+            .profile-image-wrapper{
+                &.banner-image-wrapper{            
+                    .profile-image{                
+                        img{
+                            height: 75px;
+                            margin-top: -80px;
+                            margin-left: 10px;
+                        }
+                    }
+                }
+
+                &:not(.banner-image-wrapper) {
+                    display: inline-block;
+                    float: left;
+                    margin-right: 10px;
+
+                    .profile-image{                
+                        display:inline-block;
+                        img{
+                            height: 120px;
+                        }
+                    }
+                }                
+            }     
+            
+            p{
+                margin: 0;
+            }             
+            
+            .name {
+                font-size: 27px;
+                margin-bottom: 10px;
+            }       
+                
+            .location{
+                margin-bottom: 10px;
+            }  
+                        
+            .qualification{
+                clear:both;
+                margin-top: 10px;
+            }  
+
+            .description{
+                margin-top: 10px;
+            }  
+        }
+    }
+}
+
 /* Video Player Partial */
 .video-player {
     position: relative;
+
+    .video-js{
+        background-color: #fff;
+    }
 
     .video-js .logo {
         position: absolute;
@@ -1125,11 +1227,6 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
         width: 100px;
         opacity: 0.5;
         z-index: 0 !important;
-    }
-
-    .preview-thumbnail{
-        padding:0; 
-        background-color: #fff;
     }
 
     .end-frame {
@@ -1277,9 +1374,9 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
     }
 
     .img-thumbnail{
+        padding:0;
         border: none;
         border-radius: 0;
-        background-color: #fff;
     }
 }
 
@@ -1409,7 +1506,6 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
             .description {
                 margin-top: 20px;
                 border: none;
-                font-size: 12px;
                 font-weight: @font-light;
             }
         }

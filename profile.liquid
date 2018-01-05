@@ -11,39 +11,42 @@
         <div class="top-section">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <div class="image-wrapper">
+                    <div class="profile-image-wrapper {% if teamMember.bannerImageUrl %}banner-image-wrapper{% endif %}">
+                        {% if teamMember.bannerImageUrl %}
                         <div class="banner-image">
-                            {% if teamMember.bannerImageUrl %}
-                            <img src="{{teamMember.bannerImageUrl}}" style="width: 100%;" />
-                            {% endif %}
-
+                            <img src="{{teamMember.bannerImageUrl}}" />
                         </div>
+                        {% endif %}
 
-                        <div class="team-member-image">
+                        <div class="profile-image">
                             <img src="{{ teamMember.profileImageUrl }}" />
                         </div>
                     </div>
 
-                    <div class="profile-details">
-                        <div class="displayname">{{ teamMember.fullName | escape }}</div>
+                    <div class="name"><strong>{{ teamMember.fullName | escape }}</strong></div>
 
-                        <div class="details">
+                    <div class="details {% if teamMember.bannerImageUrl %}banner-image-wrapper{% endif %}">
+                        <div class="location">
                             <p><span class="title">Location:</span></p>
                             <p>{{ teamMember.location }}</p>
+                        </div>
 
-                            {% if teamMember.qualificationsHtml != empty %}
+                        {% if teamMember.qualificationsHtml != empty %}
+                        <div class="qualification">
                             <p><span class="title">Qualification:</span></p>
                             <p>{{ teamMember.qualificationsHtml }}</p>
-                            {% endif %}
+                        </div>
+                        {% endif %}
 
-                            {% if teamMember.profileDescription != empty %}
+                        {% if teamMember.profileDescription != empty %}
+                        <div class="description">
                             <p><span class="title">Description:</span></p>
                             <p>{{ teamMember.profileDescription }}</p>
-                            {% endif %}
                         </div>
+                        {% endif %}
                     </div>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
 </div>
@@ -51,7 +54,7 @@
 <div class="row">
     <div class="col-md-12 text-center">
         {% for listing in listings %}
-            {% include listing-card %}
+        {% include listing-card %}
         {% endfor %}
     </div>
 </div>

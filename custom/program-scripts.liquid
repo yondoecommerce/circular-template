@@ -95,7 +95,7 @@ $(function () {
         };
 
         var data = toJSONObject(this);
-        data.TimeZone = jstz.determine().name();
+        data.TimeZone = moment.tz.guess();
         data.startTime = startTime;
 
         $.ajax({

@@ -29,14 +29,7 @@
     videoPlayer = videojs('video-player', options, function(){
         $("#video-player").show();
         $("#video-player video").show();
-
-        //watermark
-        {% if store.selectedLogo %}
-        videoPlayer.watermark({
-            image: '{{ store.selectedLogo }}'
-        });
-        {% endif %}
-
+        
         // videojs player has known issue with IE11 to play hls, so videojs should be forced to use flash player
         function handleIE11(){
             var isIE11 = !!(navigator.userAgent.match(/Trident/) && navigator.userAgent.match(/rv[ :]11/));
@@ -77,12 +70,12 @@
                 else if (getFileExtension(assetUrl) == "m3u8"){
                     type = "application/x-mpegURL";
 
-                    function isIE9OrBelow()
+                    function isIE10OrBelow()
                     {
-                        return /MSIE\s/.test(navigator.userAgent) && parseFloat(navigator.appVersion.split("MSIE")[1]) < 10;
+                        return /MSIE\s/.test(navigator.userAgent) && parseFloat(navigator.appVersion.split("MSIE")[1]) <= 10;
                     };
 
-                    if(isIE9OrBelow()){
+                    if(isIE10OrBelow()){
                         alert("Video playback not supported. Please upgrade your browser or use Chrome/FireFox");
                         videoPlayer.error({ code: 6, message: "Video playback not supported. Please upgrade your browser or use Chrome/FireFox" });
                     }
@@ -105,11 +98,35 @@
             {% endif %}
     
             videoPlayer.updateSrc(sources);
+
+            
+            //watermark
+            {% if store.selectedLogo %}
+            videoPlayer.watermark({
+                image: '{{ store.selectedLogo }}'
+            });
+            {% endif %}
         };
         updateSrc();       
 
     });
+        
+    //handle overlays
+    {% if video.overlays.size > 0 %}
+        var overlays = [];
+        {% for overlay in video.overlays %}
+        overlays.push({
+            startTime: {% if overlay.startTime %}{{overlay.startTime}}{% else %}null{% endif %},
+            endTime: {% if overlay.endTime %}{{overlay.endTime}}{% else %}null{% endif %},
+            imageUrl: '{{overlay.imageUrl}}',
+            url: {% if overlay.url %}'{{overlay.url}}'{% else %}null{% endif %},
+                showWhenPaused: {{overlay.showWhenPaused}}
+            });
+        {% endfor %}
     
+        overlay.load(videoPlayer, overlays);
+    {% endif %}
+
     function endFrame(){
         var endFrame = $('#end-frame').html();
         $('#video-player').append(endFrame);
@@ -207,6 +224,7 @@
     videoPlayer.on('seeked', AddEvent);
     videoPlayer.on('waiting', AddEvent);
     videoPlayer.on('error', function(event) {
+        var browserNotSupport = "Video playback not supported. Please upgrade your browser or use Chrome/FireFox";
         var messages = {
             // MEDIA_ERR_ABORTED
             1: "The video download was cancelled",
@@ -219,13 +237,17 @@
             // MEDIA_ERR_ENCRYPTED (Chrome)
             5: "The video you're trying to watch is encrypted and we don't know how to decrypt it",
             //Browser not support to play hls
-            6: "Video playback not supported. Please upgrade your browser or use Chrome/FireFox",
+            6: browserNotSupport,
             unknown: "An unanticipated problem was encountered, check back soon and try again"
         };
 
         var code, dialog, player;
         player = this;
         code = videoPlayer.error ? videoPlayer.error().code : event.code;
+
+        //manually change error text
+        if(code == 4)
+            $(".vjs-modal-dialog-content").text(browserNotSupport);
 
         // create the dialog
         dialog = document.createElement('div');
