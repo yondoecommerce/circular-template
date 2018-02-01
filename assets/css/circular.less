@@ -535,6 +535,10 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
                 margin-bottom: 0;
                 text-align: left;
             }
+
+             p{
+                margin: 0;
+            }
         }
 
         .card-image{
@@ -620,6 +624,7 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
                 font-size: 14px;
                 font-weight: bold;
                 letter-spacing: 1px;
+                width: 50%;
             }
         }
 
@@ -1210,7 +1215,11 @@ input.ng-invalid-required, select.ng-invalid-required, .well.ng-required {
     position: relative;
 
     .video-js{
-        background-color: #fff;
+        background-color: transparent;
+        
+        .img-thumbnail{
+            background-color: transparent;
+        }
     }
 
     .video-js .logo {

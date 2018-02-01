@@ -25,7 +25,7 @@
                 {% endif %}
 
                 {% if webinar.maxAttendees != webinar.currentAttendees %}
-                <button title="Click to register" class="btn btn-lg btn-primary purchase-webinar" data-webinar="{{ webinar.id }}">Register Now</button>
+                <button title="Click to register" class="btn btn-lg btn-primary purchase-webinar" data-webinar="{{ webinar.id }}">Register Now {% if webinarTopic.price > 0 %} - {{ webinarTopic.price | money }} {% endif %}</button>
                 {% else %}
                 <button title="Sold Out" class="btn btn-lg btn-warning" disabled>Sold Out <span style="font-size:14px;">{{ webinar.startTimeUtc | local_time }}</span></button>
                 {% endif %}
