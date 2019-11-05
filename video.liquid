@@ -65,7 +65,14 @@
                             </div>
 
                             <div class="col-md-6">
-                                <button class="btn btn-primary btn-primary-dark btn-lg btn-block video-purchase" data-video="{{ video.id }}">Purchase</button>
+                                <button class="btn btn-primary btn-primary-dark btn-lg btn-block video-purchase" data-video="{{ video.id }}">
+								{% if video.purchasePrice == 0 or video.purchasePrice == null %}
+								Free View
+								{% else %}
+								Purchase
+								{% endif %}
+								</button>
+								<span style="font-size:14px">{% if video.purchasePrice == 0 or video.purchasePrice == null %}Registration required{% endif %}</span>
                             </div>
                         </div>
                         {% endif %}

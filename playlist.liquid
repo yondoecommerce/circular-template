@@ -57,7 +57,14 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <button class="btn btn-block btn-primary btn-primary-dark btn-lg purchase-playlist" data-playlist="{{ playlist.id }}">Purchase</button>
+                                        <button class="btn btn-block btn-primary btn-primary-dark btn-lg purchase-playlist" data-playlist="{{ playlist.id }}">
+									  {% if playlist.purchasePrice > 0 %}
+									  Purchase
+									  {% else %}
+									  Free View
+									  {% endif  %}
+									  </button>
+									  <span style="font-size:14px">{% if playlist.purchasePrice == 0 or playlist.purchasePrice == null %}Registration required{% endif %}</span>
                                     </div>
                                 </div>
                                 {% endif %}
