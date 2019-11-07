@@ -43,7 +43,6 @@
                                 </div>
                             </div>
                             {% endif %}
-
                             {% if video.rentalAvailable and video.rented == false %}
                             <div class="col-md-6">
                                 <div class="price">
@@ -52,7 +51,16 @@
                             </div>
 
                             <div class="col-md-6">
-                                <button class="btn btn-primary btn-lg btn-block video-rental" data-video="{{ video.id }}">Rent</button>
+                                <button class="btn btn-primary btn-lg btn-block video-rental" data-video="{{ video.id }}">
+								{% if video.rentalPrice > 0 and video.rentalPrice != null %}
+								Rent
+								{% else %}
+								Free View
+								{% endif %}
+								</button>
+								{% if video.rentalPrice == 0 or video.rentalPrice == null %}
+								<span style="font-size:12px">Registration required</span>
+								{% endif %}
                             </div>
                             {% endif %}
                         </div>
@@ -66,13 +74,15 @@
 
                             <div class="col-md-6">
                                 <button class="btn btn-primary btn-primary-dark btn-lg btn-block video-purchase" data-video="{{ video.id }}">
-								{% if video.purchasePrice == 0 or video.purchasePrice == null %}
-								Free View
-								{% else %}
+								{% if video.purchasePrice > 0 or video.purchasePrice != null %}
 								Purchase
+								{% else %}
+								Free View
 								{% endif %}
 								</button>
-								<span style="font-size:14px">{% if video.purchasePrice == 0 or video.purchasePrice == null %}Registration required{% endif %}</span>
+								{% if video.purchasePrice == 0 or video.purchasePrice == null %}
+								<span style="font-size:12px">Registration required</span>
+								{% endif %}
                             </div>
                         </div>
                         {% endif %}
@@ -103,7 +113,7 @@
                         <p><span class="title">Tags:</span></p>
                         <p>
                             {% for tag in video.tags %}
-                            <div class="label label-primary">{{tag}}</div>
+                            <div class="label label-primary" title="{{tag}}">{{tag}}</div>
                             {% endfor %}
                         </p>
                         {% endif %}
