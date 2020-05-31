@@ -45,7 +45,16 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <button class="btn btn-block btn-primary btn-lg rent-playlist" data-playlist="{{ playlist.id }}">Rent</button>
+                                        <button class="btn btn-block btn-primary btn-lg rent-playlist" data-playlist="{{ playlist.id }}">
+										{% if playlist.rentalPrice > 0 and playlist.rentalPrice != null %}
+										Rent
+										{% else %}
+										Free View
+										{% endif %}
+										</button>
+										{% if playlist.rentalPrice == 0 or playlist.rentalPrice == null %}
+										<span style="font-size:12px">Registration required</span>
+										{% endif %}
                                     </div>
                                 </div>
                                 {% endif %}
@@ -57,7 +66,16 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <button class="btn btn-block btn-primary btn-primary-dark btn-lg purchase-playlist" data-playlist="{{ playlist.id }}">Purchase</button>
+                                        <button class="btn btn-block btn-primary btn-primary-dark btn-lg purchase-playlist" data-playlist="{{ playlist.id }}">
+										{% if playlist.purchasePrice > 0 and playlist.purchasePrice != null %}
+										Purchase
+										{% else %}
+										Free View
+										{% endif  %}
+										</button>
+										{% if playlist.purchasePrice == 0 or playlist.purchasePrice == null %}
+										<span style="font-size:12px">Registration required</span>
+										{% endif %}
                                     </div>
                                 </div>
                                 {% endif %}
@@ -65,7 +83,7 @@
                                 {% if playlist.subscriptionAvailable %}
                                 <div class="row price-wrapper">
                                     <div class="col-md-6">
-                                        <div class="price">{{playlist.subscriptionPrice | money}}</div>
+                                        <div class="price">{{ store.vodSettings.subscriptionPrice | money | subscription_period }}</div>
                                     </div>
 
                                     <div class="col-md-6">
